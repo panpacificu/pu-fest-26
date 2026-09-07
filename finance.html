@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>PU Fest 2026 | Finance</title>
+  <link rel="stylesheet" href="assets/css/app.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="finance.html">
+      <span class="brand-mark">PU</span>
+      <span><strong>PU Fest 2026</strong><small>Finance</small></span>
+    </a>
+    <nav>
+      <a class="active" href="finance.html">Finance</a>
+      <a href="admin.html" id="adminLink">Dashboard</a>
+      <button class="link-btn" id="logoutBtn">Sign out</button>
+    </nav>
+  </header>
+
+  <main class="page">
+    <div class="page-heading">
+      <div><span class="kicker">FINANCE DESK</span><h1>Issue Event Tickets</h1><p>Record payment, generate unique QR tickets, and email the student automatically.</p></div>
+      <div class="event-chip"><strong>₱499</strong><span>per ticket</span></div>
+    </div>
+
+    <section class="grid-two">
+      <div class="panel">
+        <div class="panel-head"><div><h2>New Transaction</h2><p>Student and payment information</p></div></div>
+        <form id="financeForm" class="form-grid">
+          <label>Student Number<input name="student_number" required autocomplete="off"></label>
+          <label>Campus<select name="campus" required><option value="">Select</option><option>Urdaneta</option><option>Tayug</option></select></label>
+
+          <label>First Name<input name="first_name" required></label>
+          <label>Middle Name<input name="middle_name"></label>
+          <label>Last Name<input name="last_name" required></label>
+          <label>Email<input name="email" type="email" required></label>
+
+          <label>Course / Program<input name="course" required></label>
+          <label>Year Level<input name="year_level" required placeholder="e.g. 3rd Year"></label>
+          <label class="span-2">Section<input name="section" required></label>
+
+          <div class="form-divider span-2"><span>Payment</span></div>
+
+          <label>Number of Tickets
+            <select name="ticket_quantity" id="ticketQty" required></select>
+          </label>
+          <label>Expected Total
+            <input id="expectedTotal" readonly>
+          </label>
+          <label>Amount Paid<input name="amount_paid" type="number" min="0" step="0.01" required></label>
+          <label>OR / Reference Number<input name="or_number" placeholder="Can be updated later"></label>
+          <label>Payment Date<input name="payment_date" type="date" required></label>
+          <label>Payment Method
+            <select name="payment_method" required>
+              <option value="Cash">Cash</option>
+              <option value="GCash">GCash</option>
+              <option value="Bank Transfer">Bank Transfer</option>
+              <option value="Other">Other</option>
+            </select>
+          </label>
+
+          <div id="holderFields" class="span-2"></div>
+
+          <label class="span-2">Notes<textarea name="notes" rows="3"></textarea></label>
+
+          <div class="span-2 form-actions">
+            <button class="btn btn-primary" id="issueBtn" type="submit">Confirm Payment & Issue Tickets</button>
+          </div>
+        </form>
+      </div>
+
+      <aside class="panel sticky-panel">
+        <div class="panel-head"><div><h2>Recent Transactions</h2><p>Latest records from Finance</p></div><button class="btn btn-ghost btn-small" id="refreshBtn">Refresh</button></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Transaction</th><th>Student</th><th>Qty</th><th>OR #</th><th></th></tr></thead>
+            <tbody id="recentBody"><tr><td colspan="5" class="empty">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <dialog id="successDialog">
+    <div class="dialog-card">
+      <div class="success-icon">✓</div>
+      <h2>Tickets issued</h2>
+      <p id="successMessage"></p>
+      <div id="issuedTickets" class="ticket-list"></div>
+      <button class="btn btn-primary" onclick="document.getElementById('successDialog').close()">Done</button>
+    </div>
+  </dialog>
+
+  <dialog id="editDialog">
+    <form method="dialog" class="dialog-card" id="editForm">
+      <button class="dialog-x" value="cancel">×</button>
+      <span class="kicker">FINANCE UPDATE</span>
+      <h2>Edit payment details</h2>
+      <input type="hidden" name="registration_id">
+      <label>OR / Reference Number<input name="or_number"></label>
+      <label>Amount Paid<input name="amount_paid" type="number" min="0" step="0.01"></label>
+      <label>Payment Date<input name="payment_date" type="date"></label>
+      <label>Payment Method<input name="payment_method"></label>
+      <label>Notes<textarea name="notes" rows="3"></textarea></label>
+      <div class="form-actions"><button class="btn btn-ghost" value="cancel">Cancel</button><button class="btn btn-primary" id="saveEditBtn" value="default">Save Changes</button></div>
+    </form>
+  </dialog>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/supabase-client.js"></script>
+  <script src="assets/js/common.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/finance.js"></script>
+</body>
+</html>

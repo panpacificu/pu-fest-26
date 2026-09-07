@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>PU Fest 2026 | Ticket</title>
+  <link rel="stylesheet" href="assets/css/app.css">
+</head>
+<body class="ticket-page">
+<main class="public-ticket-shell">
+  <section class="public-ticket" id="ticketCard">
+    <div class="ticket-hero">
+      <span class="eyebrow">PANPACIFIC UNIVERSITY</span>
+      <h1>PU Fest <span>2026</span></h1>
+      <p>Official Event Ticket</p>
+    </div>
+    <div class="ticket-body" id="ticketBody">
+      <div class="loading">Validating ticket…</div>
+    </div>
+    <footer>October 30, 2026 • 1:00 PM–6:00 PM • PanpacificU Events Center</footer>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/common.js"></script>
+<script>
+(async () => {
+  const token = new URLSearchParams(location.search).get("t");
+  const body = document.getElementById("ticketBody");
+  if (!token) { body.innerHTML = `<div class="ticket-error">Invalid ticket link.</div>`; return; }
+  try {
+    const { data, error } = await sb.functions.invoke("ticket-view", { body:{token} });
+    if (error) throw error;
+    if (!data?.valid) throw new Error(data?.message || "Ticket not found.");
+    body.innerHTML = `
+      <div class="public-status">${App.badge(data.status)}</div>
+      <div id="ticketQr" class="ticket-qr"></div>
+      <h2>${App.escapeHtml(data.holder_name || data.purchaser_name)}</h2>
+      <p>${App.escapeHtml([data.course,data.year_level,data.section].filter(Boolean).join(" • "))}</p>
+      <div class="ticket-number"><small>TICKET NUMBER</small><strong>${App.escapeHtml(data.ticket_number)}</strong></div>
+      <div class="ticket-note">${data.status === "unused" ? "Present this QR code at the entrance. This ticket can be admitted once only." : "This ticket has already been used or is no longer active."}</div>`;
+    if (data.status === "unused") new QRCode(document.getElementById("ticketQr"), { text:location.href, width:220, height:220 });
+  } catch(err) {
+    body.innerHTML = `<div class="ticket-error"><strong>Ticket unavailable</strong><span>${App.escapeHtml(err.message)}</span></div>`;
+  }
+})();
+</script>
+</body>
+</html>

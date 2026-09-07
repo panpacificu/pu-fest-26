@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>PU Fest 2026 | Admin Dashboard</title>
+  <link rel="stylesheet" href="assets/css/app.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="admin.html"><span class="brand-mark">PU</span><span><strong>PU Fest 2026</strong><small>Administration</small></span></a>
+  <nav>
+    <a class="active" href="admin.html">Dashboard</a>
+    <a href="finance.html" id="financeLink">Finance</a>
+    <a href="scanner.html" id="scannerLink">Scanner</a>
+    <button class="link-btn" id="logoutBtn">Sign out</button>
+  </nav>
+</header>
+
+<main class="page">
+  <div class="page-heading">
+    <div><span class="kicker">LIVE EVENT SYSTEM</span><h1>PU Fest 2026 Dashboard</h1><p>Registrations, tickets, check-ins, and staff operations.</p></div>
+    <button class="btn btn-primary" id="addUserBtn">Add Staff User</button>
+  </div>
+
+  <section class="stats" id="stats">
+    <div class="stat"><span>Transactions</span><strong id="statTransactions">—</strong></div>
+    <div class="stat"><span>Tickets Issued</span><strong id="statTickets">—</strong></div>
+    <div class="stat"><span>Checked In</span><strong id="statUsed">—</strong></div>
+    <div class="stat"><span>Remaining</span><strong id="statUnused">—</strong></div>
+    <div class="stat"><span>Sales Recorded</span><strong id="statSales">—</strong></div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div><h2>Registrations</h2><p>Most recent finance transactions</p></div>
+      <input id="search" class="search" placeholder="Search name, student #, transaction, OR #">
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Transaction</th><th>Student</th><th>Program</th><th>Tickets</th><th>Amount</th><th>OR #</th><th>Email</th></tr></thead>
+        <tbody id="registrationBody"><tr><td colspan="7" class="empty">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+
+  <section class="panel top-gap">
+    <div class="panel-head">
+      <div><h2>Ticket Management</h2><p>Latest issued tickets. Unused tickets may be voided by Admin/Event Admin.</p></div>
+      <button class="btn btn-ghost btn-small" id="refreshTicketsBtn">Refresh</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Ticket</th><th>Holder</th><th>Transaction</th><th>Status</th><th>Check-in</th><th></th></tr></thead>
+        <tbody id="ticketBody"><tr><td colspan="6" class="empty">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="grid-two top-gap">
+    <div class="panel">
+      <div class="panel-head"><div><h2>Recent Check-ins</h2><p>Latest admission activity</p></div></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Ticket</th><th>Result</th><th>Gate</th><th>Time</th></tr></thead>
+          <tbody id="checkinBody"><tr><td colspan="4" class="empty">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><div><h2>Staff</h2><p>Authorized system accounts</p></div></div>
+      <div id="staffList" class="staff-list">Loading…</div>
+    </div>
+  </section>
+</main>
+
+<dialog id="userDialog">
+  <form class="dialog-card" id="userForm">
+    <button type="button" class="dialog-x" onclick="document.getElementById('userDialog').close()">×</button>
+    <span class="kicker">STAFF ACCOUNT</span>
+    <h2>Create authorized user</h2>
+    <label>Full Name<input name="full_name" required></label>
+    <label>Email<input name="email" type="email" required></label>
+    <label>Temporary Password<input name="password" type="password" minlength="8" required></label>
+    <label>Role<select name="role" required>
+      <option value="finance">Finance</option>
+      <option value="event_admin">Event Admin</option>
+      <option value="scanner">Scanner / Guard</option>
+      <option value="viewer">Viewer</option>
+      <option value="admin">Admin</option>
+    </select></label>
+    <button class="btn btn-primary" id="createUserBtn" type="submit">Create User</button>
+  </form>
+</dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/common.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>PU Fest 2026 | Scanner</title>
+  <link rel="stylesheet" href="assets/css/app.css">
+</head>
+<body class="scanner-page">
+<header class="topbar scanner-topbar">
+  <a class="brand" href="scanner.html"><span class="brand-mark">PU</span><span><strong>PU Fest 2026</strong><small>Entrance Scanner</small></span></a>
+  <nav><button class="link-btn" id="logoutBtn">Sign out</button></nav>
+</header>
+<main class="scanner-shell">
+  <section class="scanner-card">
+    <div class="scanner-heading">
+      <div><span class="kicker">EVENT ADMISSION</span><h1>Scan Ticket</h1><p>Each valid QR can be admitted once.</p></div>
+      <label class="gate-label">Gate / Station<input id="gate" value="Main Entrance"></label>
+    </div>
+    <div id="reader"></div>
+    <p class="scanner-help">Point the camera at the student's PU Fest QR code.</p>
+    <div class="manual-box">
+      <span>QR not scanning?</span>
+      <div><input id="manualTicket" placeholder="PUF26-000001"><button class="btn btn-ghost" id="lookupBtn">Find Ticket</button></div>
+    </div>
+  </section>
+
+  <section class="scan-result idle" id="resultCard">
+    <div class="result-symbol" id="resultSymbol">⌁</div>
+    <span class="result-label" id="resultLabel">READY TO SCAN</span>
+    <h2 id="resultName">PU Fest 2026</h2>
+    <p id="resultDetails">Waiting for a ticket.</p>
+    <div class="result-ticket" id="resultTicket"></div>
+    <button class="btn btn-primary" id="scanNextBtn" style="display:none">Scan Next</button>
+  </section>
+</main>
+
+<dialog id="lookupDialog">
+  <div class="dialog-card">
+    <button class="dialog-x" onclick="document.getElementById('lookupDialog').close()">×</button>
+    <span class="kicker">MANUAL LOOKUP</span><h2 id="lookupTitle">Ticket</h2>
+    <div id="lookupContent"></div>
+    <button class="btn btn-primary" id="manualCheckinBtn">Manual Check-in</button>
+  </div>
+</dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://unpkg.com/html5-qrcode"></script>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/common.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/scanner.js"></script>
+</body>
+</html>

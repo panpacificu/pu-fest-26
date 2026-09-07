@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>PU Fest 2026 | Staff Login</title>
+  <link rel="stylesheet" href="assets/css/app.css">
+</head>
+<body class="login-page">
+  <main class="login-shell">
+    <section class="login-brand">
+      <span class="eyebrow">PANPACIFIC UNIVERSITY</span>
+      <h1>PU Fest <span>2026</span></h1>
+      <p>Official event ticketing, finance, and admission system.</p>
+      <div class="event-meta">
+        <div><small>DATE</small><strong>October 30, 2026</strong></div>
+        <div><small>TIME</small><strong>1:00 PM – 6:00 PM</strong></div>
+        <div><small>VENUE</small><strong>PanpacificU Events Center</strong></div>
+      </div>
+    </section>
+
+    <section class="login-card">
+      <div>
+        <span class="kicker">STAFF ACCESS</span>
+        <h2>Sign in</h2>
+        <p>Use your authorized PU Fest staff account.</p>
+      </div>
+      <form id="loginForm" class="stack">
+        <label>Email
+          <input id="email" type="email" autocomplete="username" required placeholder="name@panpacificu.edu.ph">
+        </label>
+        <label>Password
+          <input id="password" type="password" autocomplete="current-password" required>
+        </label>
+        <button class="btn btn-primary" type="submit">Sign In</button>
+        <p id="error" class="form-error" hidden></p>
+      </form>
+      <div class="fineprint">Panpacific University | PU Fest 2026 • v1.0.0</div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/supabase-client.js"></script>
+  <script src="assets/js/common.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script>
+    const form = document.getElementById("loginForm");
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const button = form.querySelector("button");
+      const error = document.getElementById("error");
+      error.hidden = true;
+      App.setBusy(button, true, "Signing in...");
+      try {
+        await Auth.login(
+          document.getElementById("email").value.trim(),
+          document.getElementById("password").value
+        );
+      } catch (err) {
+        error.textContent = err.message || "Unable to sign in.";
+        error.hidden = false;
+      } finally {
+        App.setBusy(button, false);
+      }
+    });
+    (async () => {
+      const s = await Auth.session();
+      if (s) {
+        const p = await Auth.profile().catch(() => null);
+        if (p?.active) Auth.routeByRole(p.role);
+      }
+    })();
+  </script>
+</body>
+</html>
