@@ -4,6 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>PU Fest 2026 | Admin Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/app.css">
 </head>
 <body>
@@ -18,9 +21,9 @@
 </header>
 
 <main class="page">
-  <div class="page-heading">
-    <div><span class="kicker">LIVE EVENT SYSTEM</span><h1>PU Fest 2026 Dashboard</h1><p>Registrations, tickets, check-ins, and staff operations.</p></div>
-    <button class="btn btn-primary" id="addUserBtn">Add Staff User</button>
+  <div class="page-heading compact-heading">
+    <div><span class="kicker">ADMIN</span><h1>Event Dashboard</h1><p>Registrations, tickets, attendance, and staff access.</p></div>
+    <button class="btn btn-primary" id="addUserBtn">Add Staff</button>
   </div>
 
   <section class="stats" id="stats">
@@ -40,20 +43,6 @@
       <table>
         <thead><tr><th>Transaction</th><th>Student</th><th>Program</th><th>Tickets</th><th>Amount</th><th>OR #</th><th>Email</th></tr></thead>
         <tbody id="registrationBody"><tr><td colspan="7" class="empty">Loading…</td></tr></tbody>
-      </table>
-    </div>
-  </section>
-
-
-  <section class="panel top-gap">
-    <div class="panel-head">
-      <div><h2>Ticket Management</h2><p>Latest issued tickets. Unused tickets may be voided by Admin/Event Admin.</p></div>
-      <button class="btn btn-ghost btn-small" id="refreshTicketsBtn">Refresh</button>
-    </div>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>Ticket</th><th>Holder</th><th>Transaction</th><th>Status</th><th>Check-in</th><th></th></tr></thead>
-        <tbody id="ticketBody"><tr><td colspan="6" class="empty">Loading…</td></tr></tbody>
       </table>
     </div>
   </section>

@@ -1,4 +1,4 @@
-# PU Fest 2026 Ticketing System — Setup Notes
+# PU Fest 2026 Ticketing System — Setup Notes (v1.0.1)
 
 ## 1. Supabase Project
 
@@ -112,7 +112,6 @@ supabase functions deploy ticket-lookup
 supabase functions deploy resend-ticket
 supabase functions deploy update-registration
 supabase functions deploy admin-create-user
-supabase functions deploy void-ticket
 ```
 
 `ticket-view` is intentionally public because students are not required to log in. It only returns limited ticket/event information after validating the high-entropy QR token.
@@ -240,3 +239,15 @@ Before selling tickets:
 V1 is an online validation system. Guards need working internet to validate/check in tickets.
 
 For a future version, an offline-safe queue can be designed, but one-time redemption across multiple gates is most reliable when scanners remain connected to Supabase.
+
+## 15. Role Routing
+
+After login:
+
+- `admin` → `admin.html`
+- `event_admin` → `admin.html`
+- `viewer` → `admin.html`
+- `finance` → `finance.html`
+- `scanner` → `scanner.html`
+
+If an active user manually opens a page outside their role, the system redirects them to their assigned module instead of signing them out.

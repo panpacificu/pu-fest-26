@@ -1,6 +1,6 @@
 # PU Fest 2026 Ticketing System
 
-**Version:** 1.0.0  
+**Version:** 1.0.1  
 **Event:** PU Fest 2026  
 **Date:** October 30, 2026  
 **Time:** 1:00 PM–6:00 PM  
@@ -22,7 +22,7 @@ A static GitHub Pages frontend backed by Supabase Auth, Postgres, Row Level Secu
 - Professional HTML confirmation email with inline QR codes
 - Resend ticket email without regenerating QR codes
 - OR/payment detail editing with audit logs
-- Admin dashboard, ticket voiding, and staff account creation
+- Admin dashboard and staff account creation
 - Ticket, check-in, email, and audit records
 - Public ticket viewer without exposing student records directly
 
@@ -63,3 +63,10 @@ Follow **CONFIG.md** in order.
 ## Versioning
 
 See `CHANGELOG.md`.
+
+## v1.0.1 UX Notes
+
+- Inter is the system font.
+- Finance and Scanner users are automatically routed to their assigned module after login.
+- Admin URLs remain role-protected even if manually entered.
+- Mobile layouts use larger tap targets and compact stacking.
