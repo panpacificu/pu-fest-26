@@ -1,6 +1,6 @@
 # PU Fest 2026 Ticketing System
 
-**Version:** 1.1.0  
+**Version:** 1.0.0  
 **Event:** PU Fest 2026  
 **Date:** October 30, 2026  
 **Time:** 1:00 PM–6:00 PM  
@@ -19,10 +19,10 @@ A static GitHub Pages frontend backed by Supabase Auth, Postgres, Row Level Secu
 - Duplicate/used/void ticket detection
 - Mobile QR scanner for guards
 - Manual ticket-number lookup/check-in
-- Professional HTML confirmation email with inline QR codes via Google Apps Script / MailApp
+- Professional HTML confirmation email with inline QR codes
 - Resend ticket email without regenerating QR codes
 - OR/payment detail editing with audit logs
-- Admin dashboard and staff account creation
+- Admin dashboard, ticket voiding, and staff account creation
 - Ticket, check-in, email, and audit records
 - Public ticket viewer without exposing student records directly
 
@@ -63,18 +63,3 @@ Follow **CONFIG.md** in order.
 ## Versioning
 
 See `CHANGELOG.md`.
-
-## v1.0.1 UX Notes
-
-- Inter is the system font.
-- Finance and Scanner users are automatically routed to their assigned module after login.
-- Admin URLs remain role-protected even if manually entered.
-- Mobile layouts use larger tap targets and compact stacking.
-
-## v1.1.0 Hybrid Backup / Email Architecture
-
-The system now uses Supabase as the primary database while mirroring issued registration/ticket metadata to the Google Sheet `PU-Fest-Tickets 2026 (Backup)`.
-
-Google Apps Script sends the professional ticket email using the Workspace account that deploys the Web App.
-
-The raw QR secret remains only in Supabase and is never written to the backup Sheet.

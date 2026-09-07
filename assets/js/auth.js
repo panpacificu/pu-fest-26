@@ -23,19 +23,12 @@ window.Auth = (() => {
       location.href = "index.html";
       throw new Error("Not signed in");
     }
-
     const p = await profile();
-    if (!p?.active) {
+    if (!p?.active || !allowed.includes(p.role)) {
       await sb.auth.signOut();
-      location.href = "index.html?inactive=1";
-      throw new Error("Account inactive");
+      location.href = "index.html?denied=1";
+      throw new Error("Account not authorized");
     }
-
-    if (!allowed.includes(p.role)) {
-      routeByRole(p.role);
-      throw new Error("Redirecting to your authorized module");
-    }
-
     return { session: s, profile: p };
   }
 

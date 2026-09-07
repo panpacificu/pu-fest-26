@@ -1,130 +1,104 @@
-import QRCode from "npm:qrcode@1.5.4";
-import type { SupabaseClient } from "npm:@supabase/supabase-js@2";
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>PU Fest 2026 | Admin Dashboard</title>
+  <link rel="stylesheet" href="assets/css/app.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="admin.html"><span class="brand-mark">PU</span><span><strong>PU Fest 2026</strong><small>Administration</small></span></a>
+  <nav>
+    <a class="active" href="admin.html">Dashboard</a>
+    <a href="finance.html" id="financeLink">Finance</a>
+    <a href="scanner.html" id="scannerLink">Scanner</a>
+    <button class="link-btn" id="logoutBtn">Sign out</button>
+  </nav>
+</header>
 
-function fullName(r: any) {
-  return [r.first_name, r.middle_name, r.last_name]
-    .filter(Boolean).join(" ").replace(/\s+/g, " ").trim();
-}
+<main class="page">
+  <div class="page-heading">
+    <div><span class="kicker">LIVE EVENT SYSTEM</span><h1>PU Fest 2026 Dashboard</h1><p>Registrations, tickets, check-ins, and staff operations.</p></div>
+    <button class="btn btn-primary" id="addUserBtn">Add Staff User</button>
+  </div>
 
-async function postToAppsScript(payload: Record<string, unknown>) {
-  const url = Deno.env.get("APPS_SCRIPT_WEBAPP_URL");
-  const secret = Deno.env.get("PU_FEST_SYNC_SECRET");
+  <section class="stats" id="stats">
+    <div class="stat"><span>Transactions</span><strong id="statTransactions">—</strong></div>
+    <div class="stat"><span>Tickets Issued</span><strong id="statTickets">—</strong></div>
+    <div class="stat"><span>Checked In</span><strong id="statUsed">—</strong></div>
+    <div class="stat"><span>Remaining</span><strong id="statUnused">—</strong></div>
+    <div class="stat"><span>Sales Recorded</span><strong id="statSales">—</strong></div>
+  </section>
 
-  if (!url) throw new Error("APPS_SCRIPT_WEBAPP_URL is not configured.");
-  if (!secret) throw new Error("PU_FEST_SYNC_SECRET is not configured.");
+  <section class="panel">
+    <div class="panel-head">
+      <div><h2>Registrations</h2><p>Most recent finance transactions</p></div>
+      <input id="search" class="search" placeholder="Search name, student #, transaction, OR #">
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Transaction</th><th>Student</th><th>Program</th><th>Tickets</th><th>Amount</th><th>OR #</th><th>Email</th></tr></thead>
+        <tbody id="registrationBody"><tr><td colspan="7" class="empty">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </section>
 
-  const response = await fetch(url, {
-    method: "POST",
-    redirect: "follow",
-    headers: {
-      "Content-Type": "application/json",
-      "User-Agent": "PU-Fest-2026-Supabase/1.1.0"
-    },
-    body: JSON.stringify({ ...payload, secret })
-  });
 
-  const text = await response.text();
-  let data: any = {};
-  try { data = JSON.parse(text); } catch {
-    throw new Error(`Apps Script returned an invalid response (${response.status}).`);
-  }
+  <section class="panel top-gap">
+    <div class="panel-head">
+      <div><h2>Ticket Management</h2><p>Latest issued tickets. Unused tickets may be voided by Admin/Event Admin.</p></div>
+      <button class="btn btn-ghost btn-small" id="refreshTicketsBtn">Refresh</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Ticket</th><th>Holder</th><th>Transaction</th><th>Status</th><th>Check-in</th><th></th></tr></thead>
+        <tbody id="ticketBody"><tr><td colspan="6" class="empty">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </section>
 
-  if (!response.ok) {
-    throw new Error(data?.message || `Apps Script returned HTTP ${response.status}.`);
-  }
+  <section class="grid-two top-gap">
+    <div class="panel">
+      <div class="panel-head"><div><h2>Recent Check-ins</h2><p>Latest admission activity</p></div></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Ticket</th><th>Result</th><th>Gate</th><th>Time</th></tr></thead>
+          <tbody id="checkinBody"><tr><td colspan="4" class="empty">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><div><h2>Staff</h2><p>Authorized system accounts</p></div></div>
+      <div id="staffList" class="staff-list">Loading…</div>
+    </div>
+  </section>
+</main>
 
-  return data;
-}
+<dialog id="userDialog">
+  <form class="dialog-card" id="userForm">
+    <button type="button" class="dialog-x" onclick="document.getElementById('userDialog').close()">×</button>
+    <span class="kicker">STAFF ACCOUNT</span>
+    <h2>Create authorized user</h2>
+    <label>Full Name<input name="full_name" required></label>
+    <label>Email<input name="email" type="email" required></label>
+    <label>Temporary Password<input name="password" type="password" minlength="8" required></label>
+    <label>Role<select name="role" required>
+      <option value="finance">Finance</option>
+      <option value="event_admin">Event Admin</option>
+      <option value="scanner">Scanner / Guard</option>
+      <option value="viewer">Viewer</option>
+      <option value="admin">Admin</option>
+    </select></label>
+    <button class="btn btn-primary" id="createUserBtn" type="submit">Create User</button>
+  </form>
+</dialog>
 
-export async function buildTicketPayload(
-  admin: SupabaseClient,
-  registrationId: string,
-  includeQr: boolean
-) {
-  const { data: registration, error: regError } = await admin
-    .from("registrations")
-    .select("*")
-    .eq("id", registrationId)
-    .single();
-
-  if (regError || !registration) throw new Error("Registration not found.");
-
-  const { data: tickets, error: ticketError } = await admin
-    .from("tickets")
-    .select("id,ticket_number,holder_name,status,created_at")
-    .eq("registration_id", registrationId)
-    .order("created_at");
-
-  if (ticketError) throw ticketError;
-
-  const outputTickets: any[] = [];
-  const siteUrl = (Deno.env.get("SITE_URL") || "").replace(/\/$/, "");
-
-  if (includeQr && !siteUrl) {
-    throw new Error("SITE_URL is not configured.");
-  }
-
-  let secretMap = new Map<string, string>();
-
-  if (includeQr && tickets?.length) {
-    const ids = tickets.map(t => t.id);
-    const { data: secrets, error: secretError } = await admin
-      .from("ticket_secrets")
-      .select("ticket_id,qr_token")
-      .in("ticket_id", ids);
-
-    if (secretError) throw secretError;
-    secretMap = new Map((secrets || []).map(s => [s.ticket_id, s.qr_token]));
-  }
-
-  for (const ticket of tickets || []) {
-    const item: any = { ...ticket };
-
-    if (includeQr) {
-      const token = secretMap.get(ticket.id);
-      if (!token) throw new Error(`Ticket secret missing for ${ticket.ticket_number}.`);
-
-      const ticketUrl = `${siteUrl}/ticket.html?t=${encodeURIComponent(token)}`;
-      const dataUrl = await QRCode.toDataURL(ticketUrl, {
-        width: 360,
-        margin: 2,
-        errorCorrectionLevel: "M"
-      });
-
-      item.ticket_url = ticketUrl;
-      item.qr_png_base64 = dataUrl.split(",")[1];
-    }
-
-    outputTickets.push(item);
-  }
-
-  return {
-    registration: {
-      ...registration,
-      registration_id: registration.id,
-      full_name: fullName(registration)
-    },
-    tickets: outputTickets
-  };
-}
-
-export async function syncIssueToAppsScript(
-  admin: SupabaseClient,
-  registrationId: string,
-  action: "issue" | "resend"
-) {
-  const payload = await buildTicketPayload(admin, registrationId, true);
-  return await postToAppsScript({ action, ...payload });
-}
-
-export async function syncRegistrationUpdateToAppsScript(
-  admin: SupabaseClient,
-  registrationId: string
-) {
-  const payload = await buildTicketPayload(admin, registrationId, false);
-  return await postToAppsScript({
-    action: "update_registration",
-    registration: payload.registration,
-    tickets: []
-  });
-}
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/common.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/admin.js"></script>
+</body>
+</html>

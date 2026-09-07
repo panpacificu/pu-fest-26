@@ -1,5 +1,5 @@
 window.APP_CONFIG = Object.freeze({
-  version: "1.0.1",
+  version: "1.0.0",
   supabaseUrl: "https://kimhqlenfulaflyfhrez.supabase.co",
   supabasePublishableKey: "sb_publishable_lVIDPIqZLY063pbcyxsoSQ_IebsYf37",
   siteUrl: "https://panpacificu.github.io/pu-fest-26",
