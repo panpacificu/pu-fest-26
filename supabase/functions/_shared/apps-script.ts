@@ -1,0 +1,143 @@
+import QRCode from "npm:qrcode@1.5.4";
+import type { SupabaseClient } from "npm:@supabase/supabase-js@2";
+
+function fullName(r: any) {
+  return [r.first_name, r.middle_name, r.last_name]
+    .filter(Boolean).join(" ").replace(/\s+/g, " ").trim();
+}
+
+async function postToAppsScript(payload: Record<string, unknown>) {
+  const url = Deno.env.get("APPS_SCRIPT_WEBAPP_URL");
+  const secret = Deno.env.get("PU_FEST_SYNC_SECRET");
+
+  if (!url) throw new Error("APPS_SCRIPT_WEBAPP_URL is not configured.");
+  if (!secret) throw new Error("PU_FEST_SYNC_SECRET is not configured.");
+
+  // Keep this request intentionally simple.
+  // Google Apps Script Web Apps can behave differently with custom headers
+  // from serverless runtimes. A plain-text JSON body is still available
+  // unchanged through e.postData.contents in Apps Script.
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "text/plain;charset=utf-8"
+    },
+    body: JSON.stringify({ ...payload, secret })
+  });
+
+  const responseText = await response.text();
+  let data: any = null;
+
+  try {
+    data = JSON.parse(responseText);
+  } catch {
+    const preview = responseText
+      .replace(/\\s+/g, " ")
+      .slice(0, 180);
+
+    throw new Error(
+      `Apps Script HTTP ${response.status}: ${preview || "non-JSON response"}`
+    );
+  }
+
+  if (!response.ok) {
+    throw new Error(
+      data?.message || `Apps Script returned HTTP ${response.status}.`
+    );
+  }
+
+  return data;
+}
+
+export async function buildTicketPayload(
+  admin: SupabaseClient,
+  registrationId: string,
+  includeQr: boolean
+) {
+  const { data: registration, error: regError } = await admin
+    .from("registrations")
+    .select("*")
+    .eq("id", registrationId)
+    .single();
+
+  if (regError || !registration) throw new Error("Registration not found.");
+
+  const { data: tickets, error: ticketError } = await admin
+    .from("tickets")
+    .select("id,ticket_number,holder_name,status,created_at")
+    .eq("registration_id", registrationId)
+    .order("created_at");
+
+  if (ticketError) throw ticketError;
+
+  const outputTickets: any[] = [];
+  const siteUrl = (Deno.env.get("SITE_URL") || "").replace(/\/$/, "");
+
+  if (includeQr && !siteUrl) {
+    throw new Error("SITE_URL is not configured.");
+  }
+
+  let secretMap = new Map<string, string>();
+
+  if (includeQr && tickets?.length) {
+    const ids = tickets.map(t => t.id);
+    const { data: secrets, error: secretError } = await admin
+      .from("ticket_secrets")
+      .select("ticket_id,qr_token")
+      .in("ticket_id", ids);
+
+    if (secretError) throw secretError;
+    secretMap = new Map((secrets || []).map(s => [s.ticket_id, s.qr_token]));
+  }
+
+  for (const ticket of tickets || []) {
+    const item: any = { ...ticket };
+
+    if (includeQr) {
+      const token = secretMap.get(ticket.id);
+      if (!token) throw new Error(`Ticket secret missing for ${ticket.ticket_number}.`);
+
+      const ticketUrl = `${siteUrl}/ticket.html?t=${encodeURIComponent(token)}`;
+      const dataUrl = await QRCode.toDataURL(ticketUrl, {
+        width: 360,
+        margin: 2,
+        errorCorrectionLevel: "M"
+      });
+
+      item.ticket_url = ticketUrl;
+      item.qr_png_base64 = dataUrl.split(",")[1];
+    }
+
+    outputTickets.push(item);
+  }
+
+  return {
+    registration: {
+      ...registration,
+      registration_id: registration.id,
+      full_name: fullName(registration)
+    },
+    tickets: outputTickets
+  };
+}
+
+export async function syncIssueToAppsScript(
+  admin: SupabaseClient,
+  registrationId: string,
+  action: "issue" | "resend"
+) {
+  const payload = await buildTicketPayload(admin, registrationId, true);
+  return await postToAppsScript({ action, ...payload });
+}
+
+export async function syncRegistrationUpdateToAppsScript(
+  admin: SupabaseClient,
+  registrationId: string
+) {
+  const payload = await buildTicketPayload(admin, registrationId, false);
+  return await postToAppsScript({
+    action: "update_registration",
+    registration: payload.registration,
+    tickets: []
+  });
+}

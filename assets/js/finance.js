@@ -127,8 +127,10 @@
       const { data, error } = await sb.functions.invoke("issue-tickets", { body: payload });
       if (error) throw error;
       if (!data?.success) throw new Error(data?.message || "Unable to issue tickets.");
+      const syncText = data.sheet_synced ? "Backup synced." : "Backup sync needs attention.";
+      const mailText = data.email_sent ? "Confirmation email sent." : "Email delivery needs attention.";
       document.getElementById("successMessage").textContent =
-        `${data.transaction_number} created. ${data.email_sent ? "Confirmation email sent." : "Tickets created, but email delivery needs attention."}`;
+        `${data.transaction_number} created. ${syncText} ${mailText}`;
       document.getElementById("issuedTickets").innerHTML = data.tickets.map(t =>
         `<div><strong>${App.escapeHtml(t.ticket_number)}</strong><span>${App.escapeHtml(t.holder_name)}</span></div>`
       ).join("");
@@ -165,7 +167,12 @@
       if (error) throw error;
       if (!data?.success) throw new Error(data?.message || "Update failed.");
       editDialog.close();
-      App.toast("Payment details updated.", "success");
+      App.toast(
+        data.sheet_synced
+          ? "Payment details updated and backup synced."
+          : "Payment updated. Backup sync needs attention.",
+        data.sheet_synced ? "success" : "info"
+      );
       await loadRecent();
     } catch (err) {
       App.toast(err.message || "Update failed.", "error");

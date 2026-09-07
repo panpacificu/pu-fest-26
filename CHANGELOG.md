@@ -1,5 +1,48 @@
 # Changelog
 
+## 1.1.1 — Apps Script Bridge Hotfix
+
+- Simplified Supabase → Apps Script POST request
+- Removed custom User-Agent header
+- Changed request body content type to simple `text/plain;charset=utf-8`
+- Retained JSON payload parsing through Apps Script `e.postData.contents`
+- Added HTTP status and response preview to bridge diagnostics
+- No database migration required
+
+## 1.1.0 — Google Sheets Backup + Apps Script Email
+
+- Switched transactional ticket email from Resend to Google Apps Script MailApp
+- Added Google Sheets backup bridge
+- Configured `PU-Fest-Tickets 2026 (Backup)`
+- Added automatic Registrations, Tickets, Email Logs, and Sync Logs tabs
+- Added secure shared-secret authentication between Supabase and Apps Script
+- Raw QR secrets remain excluded from Google Sheets
+- QR images are generated server-side in Supabase and embedded in email
+- Added Sheet sync status fields to Supabase registrations
+- Added email sent/error timestamps to Supabase
+- Finance OR/payment corrections now re-sync to Google Sheets
+- Admin dashboard now shows both Backup and Email status
+- Ticket creation remains successful even when backup/email delivery temporarily fails
+- Added v1.1.0 migration SQL
+- Removed Resend dependency from ticket email workflow
+
+## 1.0.1 — Compact UI & Role Routing
+
+- Inter font applied across the entire system
+- Simplified, compact visual design
+- Improved spacing, form density, and readability
+- Mobile-first form controls and larger tap targets
+- Better phone layout for Finance
+- Cleaner Admin dashboard cards and tables
+- More focused Scanner interface
+- Compact digital ticket layout
+- Role-based routing retained after login
+- Unauthorized active users are redirected to their own module instead of being signed out
+- Finance users no longer need to navigate through Admin
+- Scanner/Guard accounts land directly on Scanner
+- Admin/Event Admin accounts land on Dashboard
+- Viewer accounts remain limited to Dashboard
+
 ## 1.0.0 — Initial Build
 
 - PU Fest 2026 event configuration
@@ -19,8 +62,6 @@
 - OR/payment correction workflow
 - Audit logging
 - Admin dashboard
-- Admin/Event Admin unused-ticket voiding
-- Finance resend-ticket action
 - Staff user creation Edge Function
 - Public ticket viewer
 - SQL/RLS setup scripts

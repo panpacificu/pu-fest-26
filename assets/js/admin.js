@@ -28,7 +28,7 @@
 
   async function loadRegistrations() {
     const { data, error } = await sb.from("registrations")
-      .select("id,transaction_number,student_number,first_name,middle_name,last_name,email,course,year_level,section,ticket_quantity,amount_paid,or_number,email_status,created_at")
+      .select("id,transaction_number,student_number,first_name,middle_name,last_name,email,course,year_level,section,ticket_quantity,amount_paid,or_number,sheet_sync_status,email_status,created_at")
       .order("created_at",{ascending:false}).limit(300);
     if (error) { App.toast(error.message,"error"); return; }
     registrations = data || [];
@@ -48,8 +48,9 @@
         <td>${r.ticket_quantity}</td>
         <td>${App.money(r.amount_paid)}</td>
         <td>${App.escapeHtml(r.or_number || "Pending")}</td>
+        <td>${App.badge(r.sheet_sync_status || "pending")}</td>
         <td>${App.badge(r.email_status || "pending")}</td>
-      </tr>`).join("") : `<tr><td colspan="7" class="empty">No matching registrations.</td></tr>`;
+      </tr>`).join("") : `<tr><td colspan="8" class="empty">No matching registrations.</td></tr>`;
   }
 
 
