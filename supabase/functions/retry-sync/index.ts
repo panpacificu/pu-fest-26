@@ -8,33 +8,38 @@ Deno.serve(async req => {
     const { profile, admin } = await requireStaff(req, ["admin", "finance", "event_admin"]);
     const { registration_id } = await req.json();
 
-    const { data: r, error } = await admin
+    if (!registration_id) throw new Error("Registration ID required");
+
+    const { data: registration, error: findError } = await admin
       .from("registrations")
-      .select("id,email")
+      .select("id,transaction_number")
       .eq("id", registration_id)
       .single();
 
-    if (error || !r) throw new Error("Registration not found");
+    if (findError || !registration) throw new Error("Registration not found");
 
-    await admin.from("registrations").update({
-      email_status: "pending",
-      email_error: null
-    }).eq("id", r.id);
+    const { error } = await admin
+      .from("registrations")
+      .update({
+        sheet_sync_status: "pending",
+        sheet_sync_error: null
+      })
+      .eq("id", registration.id);
+
+    if (error) throw error;
 
     await admin.from("audit_logs").insert({
       actor_id: profile.id,
-      action: "QUEUE_TICKET_EMAIL",
+      action: "QUEUE_SHEET_SYNC",
       entity_type: "registration",
-      entity_id: r.id,
-      new_values: { queued: true }
+      entity_id: registration.id,
+      new_values: {
+        transaction_number: registration.transaction_number,
+        queued: true
+      }
     });
 
-    return json(req, {
-      success: true,
-      queued: true,
-      email_sent: false
-    });
-
+    return json(req, { success: true, queued: true });
   } catch (err) {
     return json(req, {
       success: false,

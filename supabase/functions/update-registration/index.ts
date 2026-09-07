@@ -1,6 +1,5 @@
 import { corsHeaders, json } from "../_shared/cors.ts";
 import { requireStaff } from "../_shared/supabase.ts";
-import { syncRegistrationUpdateToAppsScript } from "../_shared/apps-script.ts";
 
 Deno.serve(async req => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders(req) });
@@ -17,7 +16,6 @@ Deno.serve(async req => {
     }
 
     if (!id || !Object.keys(allowed).length) throw new Error("No valid updates supplied");
-
     if ("amount_paid" in allowed &&
         (!Number.isFinite(Number(allowed.amount_paid)) || Number(allowed.amount_paid) < 0)) {
       throw new Error("Invalid amount paid");
@@ -32,12 +30,10 @@ Deno.serve(async req => {
     if (oldError || !old) throw new Error("Registration not found");
 
     allowed.updated_by = profile.id;
+    allowed.sheet_sync_status = "pending";
+    allowed.sheet_sync_error = null;
 
-    const { error } = await admin
-      .from("registrations")
-      .update(allowed)
-      .eq("id", id);
-
+    const { error } = await admin.from("registrations").update(allowed).eq("id", id);
     if (error) throw error;
 
     await admin.from("audit_logs").insert({
@@ -49,27 +45,10 @@ Deno.serve(async req => {
       new_values: allowed
     });
 
-    let sheetSynced = false;
-    let sheetError: string | null = null;
-
-    try {
-      const bridge = await syncRegistrationUpdateToAppsScript(admin, id);
-      sheetSynced = !!bridge?.sheet_synced;
-      sheetError = bridge?.sheet_error || null;
-    } catch (e) {
-      sheetError = e instanceof Error ? e.message : String(e);
-    }
-
-    await admin.from("registrations").update({
-      sheet_sync_status: sheetSynced ? "synced" : "failed",
-      sheet_synced_at: sheetSynced ? new Date().toISOString() : null,
-      sheet_sync_error: sheetError
-    }).eq("id", id);
-
     return json(req, {
       success: true,
-      sheet_synced: sheetSynced,
-      sheet_error: sheetError
+      sheet_synced: false,
+      queued: true
     });
 
   } catch (err) {

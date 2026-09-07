@@ -11,7 +11,10 @@
 </head>
 <body>
 <header class="topbar">
-  <a class="brand" href="admin.html"><span class="brand-mark">PU</span><span><strong>PU Fest 2026</strong><small>Administration</small></span></a>
+  <a class="brand" href="admin.html">
+    <span class="brand-mark">PU</span>
+    <span><strong>PU Fest 2026</strong><small>Administration</small></span>
+  </a>
   <nav>
     <a class="active" href="admin.html">Dashboard</a>
     <a href="finance.html" id="financeLink">Finance</a>
@@ -20,43 +23,112 @@
   </nav>
 </header>
 
-<main class="page">
+<main class="page admin-page">
   <div class="page-heading compact-heading">
-    <div><span class="kicker">ADMIN</span><h1>Event Dashboard</h1><p>Registrations, tickets, attendance, and staff access.</p></div>
-    <button class="btn btn-primary" id="addUserBtn">Add Staff</button>
+    <div>
+      <span class="kicker">ADMIN</span>
+      <h1>Event Dashboard</h1>
+      <p>Registrations, tickets, attendance, email, backup, and staff operations.</p>
+    </div>
+    <div class="heading-actions">
+      <button class="btn btn-ghost" id="exportBtn">Export CSV</button>
+      <button class="btn btn-primary" id="addUserBtn">Add Staff</button>
+    </div>
   </div>
 
-  <section class="stats" id="stats">
+  <section class="stats stats-six" id="stats">
     <div class="stat"><span>Transactions</span><strong id="statTransactions">—</strong></div>
     <div class="stat"><span>Tickets Issued</span><strong id="statTickets">—</strong></div>
     <div class="stat"><span>Checked In</span><strong id="statUsed">—</strong></div>
     <div class="stat"><span>Remaining</span><strong id="statUnused">—</strong></div>
+    <div class="stat"><span>Attendance</span><strong id="statAttendance">—</strong></div>
     <div class="stat"><span>Sales Recorded</span><strong id="statSales">—</strong></div>
   </section>
 
   <section class="panel">
-    <div class="panel-head">
-      <div><h2>Registrations</h2><p>Most recent finance transactions</p></div>
-      <input id="search" class="search" placeholder="Search name, student #, transaction, OR #">
+    <div class="panel-head responsive-head">
+      <div><h2>Registrations</h2><p>Finance transactions and delivery status</p></div>
+      <div class="toolbar">
+        <input id="registrationSearch" class="search" placeholder="Search name, student #, transaction, OR #">
+        <select id="deliveryFilter" class="compact-select" aria-label="Delivery filter">
+          <option value="all">All delivery statuses</option>
+          <option value="needs_attention">Needs attention</option>
+          <option value="sent_synced">Sent + synced</option>
+          <option value="email_pending">Email pending</option>
+          <option value="backup_pending">Backup pending</option>
+        </select>
+        <button class="btn btn-ghost btn-small" id="refreshRegistrationsBtn">Refresh</button>
+      </div>
     </div>
+
     <div class="table-wrap">
-      <table>
-        <thead><tr><th>Transaction</th><th>Student</th><th>Program</th><th>Tickets</th><th>Amount</th><th>OR #</th><th>Backup</th><th>Email</th></tr></thead>
-        <tbody id="registrationBody"><tr><td colspan="8" class="empty">Loading…</td></tr></tbody>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Transaction</th><th>Student</th><th>Program</th><th>Qty</th>
+            <th>Amount</th><th>OR #</th><th>Backup</th><th>Email</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="registrationBody">
+          <tr><td colspan="9" class="empty">Loading…</td></tr>
+        </tbody>
       </table>
     </div>
   </section>
 
-  <section class="grid-two top-gap">
+  <section class="panel top-gap">
+    <div class="panel-head responsive-head">
+      <div><h2>Tickets</h2><p>Issued, used, and voided QR tickets</p></div>
+      <div class="toolbar">
+        <input id="ticketSearch" class="search" placeholder="Search ticket, holder, transaction">
+        <select id="ticketStatusFilter" class="compact-select" aria-label="Ticket status filter">
+          <option value="all">All tickets</option>
+          <option value="unused">Unused</option>
+          <option value="used">Used</option>
+          <option value="void">Void</option>
+        </select>
+        <button class="btn btn-ghost btn-small" id="refreshTicketsBtn">Refresh</button>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Ticket</th><th>Holder</th><th>Transaction</th><th>Status</th>
+            <th>Check-in</th><th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="ticketBody">
+          <tr><td colspan="6" class="empty">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="dashboard-grid top-gap">
     <div class="panel">
-      <div class="panel-head"><div><h2>Recent Check-ins</h2><p>Latest admission activity</p></div></div>
-      <div class="table-wrap">
+      <div class="panel-head"><div><h2>Gate Activity</h2><p>Successful admissions by station</p></div></div>
+      <div id="gateStats" class="gate-stats"><div class="empty-card">Loading…</div></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><div><h2>Recent Check-ins</h2><p>Latest scanner activity</p></div></div>
+      <div class="table-wrap compact-table-wrap">
         <table>
           <thead><tr><th>Ticket</th><th>Result</th><th>Gate</th><th>Time</th></tr></thead>
           <tbody id="checkinBody"><tr><td colspan="4" class="empty">Loading…</td></tr></tbody>
         </table>
       </div>
     </div>
+  </section>
+
+  <section class="dashboard-grid top-gap">
+    <div class="panel">
+      <div class="panel-head"><div><h2>Recent Activity</h2><p>Administrative audit trail</p></div></div>
+      <div id="activityList" class="activity-list"><div class="empty-card">Loading…</div></div>
+    </div>
+
     <div class="panel">
       <div class="panel-head"><div><h2>Staff</h2><p>Authorized system accounts</p></div></div>
       <div id="staffList" class="staff-list">Loading…</div>
@@ -72,13 +144,15 @@
     <label>Full Name<input name="full_name" required></label>
     <label>Email<input name="email" type="email" required></label>
     <label>Temporary Password<input name="password" type="password" minlength="8" required></label>
-    <label>Role<select name="role" required>
-      <option value="finance">Finance</option>
-      <option value="event_admin">Event Admin</option>
-      <option value="scanner">Scanner / Guard</option>
-      <option value="viewer">Viewer</option>
-      <option value="admin">Admin</option>
-    </select></label>
+    <label>Role
+      <select name="role" required>
+        <option value="finance">Finance</option>
+        <option value="event_admin">Event Admin</option>
+        <option value="scanner">Scanner / Guard</option>
+        <option value="viewer">Viewer</option>
+        <option value="admin">Admin</option>
+      </select>
+    </label>
     <button class="btn btn-primary" id="createUserBtn" type="submit">Create User</button>
   </form>
 </dialog>

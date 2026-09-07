@@ -1,5 +1,39 @@
 # Changelog
 
+## 1.3.0 — Admin + Finance Polish
+
+- Fixed Admin Dashboard stuck on `Loading...`
+- Added missing Tickets dashboard section
+- Switched dashboard startup to independent `Promise.allSettled` loaders
+- Added per-panel error states
+- Added registration search and delivery-status filters
+- Added ticket search and status filters
+- Added Resend Email controls
+- Added Retry Backup controls
+- Added new `retry-sync` Edge Function
+- Improved Void Ticket workflow and queued Sheet refresh after void
+- Added Gate Activity statistics
+- Added recent administrative activity
+- Added registration CSV export
+- Added attendance percentage stat
+- Added backup/email status to Finance recent transactions
+- Added compact responsive Admin/Finance controls
+- No new SQL migration required
+
+## 1.2.0 — Pull-Based Google Worker
+
+- Reversed Google integration direction to avoid Apps Script HTTP 401 from Supabase-origin requests
+- Added `apps-script-pull` Supabase Edge Function
+- Google Apps Script now polls Supabase every minute
+- Added automatic one-minute worker trigger setup
+- Added LockService protection against overlapping Apps Script worker runs
+- Ticket creation no longer waits for Google Sheets/email
+- New tickets are queued as PENDING for backup/email
+- Finance payment edits queue a Google Sheet refresh
+- Resend action queues email for the worker
+- Existing QR security and one-time admission remain unchanged
+- No new SQL migration required beyond v1.1.0 migration
+
 ## 1.1.1 — Apps Script Bridge Hotfix
 
 - Simplified Supabase → Apps Script POST request

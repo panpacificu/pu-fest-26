@@ -41,44 +41,56 @@
   qty.addEventListener("change", updateTotal);
   updateTotal();
 
+  let recentRows = [];
+
   async function loadRecent() {
-    recentBody.innerHTML = `<tr><td colspan="5" class="empty">Loading…</td></tr>`;
+    recentBody.innerHTML = `<tr><td colspan="7" class="empty">Loading…</td></tr>`;
+
     const { data, error } = await sb.from("registrations")
-      .select("id,transaction_number,first_name,middle_name,last_name,ticket_quantity,or_number,amount_paid,payment_date,payment_method,notes,email_status,created_at")
-      .order("created_at", { ascending:false }).limit(30);
+      .select("id,transaction_number,first_name,middle_name,last_name,ticket_quantity,or_number,amount_paid,payment_date,payment_method,notes,sheet_sync_status,email_status,created_at")
+      .order("created_at", { ascending:false })
+      .limit(100);
+
     if (error) {
-      recentBody.innerHTML = `<tr><td colspan="5" class="empty">${App.escapeHtml(error.message)}</td></tr>`;
+      recentBody.innerHTML = `<tr><td colspan="7" class="empty error-empty">${App.escapeHtml(error.message)}</td></tr>`;
       return;
     }
-    if (!data?.length) {
-      recentBody.innerHTML = `<tr><td colspan="5" class="empty">No transactions yet.</td></tr>`;
+
+    recentRows = data || [];
+    renderRecent();
+  }
+
+  function renderRecent() {
+    const q = (document.getElementById("recentSearch")?.value || "").toLowerCase().trim();
+    const rows = recentRows.filter(r => [
+      r.transaction_number, r.first_name, r.middle_name, r.last_name, r.or_number
+    ].filter(Boolean).join(" ").toLowerCase().includes(q));
+
+    if (!rows.length) {
+      recentBody.innerHTML = `<tr><td colspan="7" class="empty">No matching transactions.</td></tr>`;
       return;
     }
-    recentBody.innerHTML = data.map(r => `
+
+    recentBody.innerHTML = rows.map(r => `
       <tr>
         <td><strong>${App.escapeHtml(r.transaction_number)}</strong><small>${App.formatDateTime(r.created_at)}</small></td>
         <td>${App.escapeHtml(App.fullName(r))}</td>
         <td>${r.ticket_quantity}</td>
         <td>${App.escapeHtml(r.or_number || "Pending")}</td>
-        <td><div style="display:flex;gap:6px"><button class="btn btn-ghost btn-small resend-row" data-id="${r.id}">Resend</button><button class="btn btn-ghost btn-small edit-row" data-id="${r.id}">Edit</button></div></td>
+        <td>${App.badge(r.sheet_sync_status || "pending")}</td>
+        <td>${App.badge(r.email_status || "pending")}</td>
+        <td>
+          <div class="row-actions">
+            <button class="btn btn-ghost btn-small edit-row" data-id="${r.id}">Edit</button>
+            <button class="btn btn-ghost btn-small resend-row" data-id="${r.id}">Resend</button>
+            <button class="btn btn-ghost btn-small retry-row" data-id="${r.id}">Retry Backup</button>
+          </div>
+        </td>
       </tr>`).join("");
-    recentBody.querySelectorAll(".resend-row").forEach(btn => {
-      btn.onclick = async () => {
-        App.setBusy(btn,true,"Sending…");
-        try {
-          const {data,error} = await sb.functions.invoke("resend-ticket",{body:{registration_id:btn.dataset.id}});
-          if (error) throw error;
-          if (!data?.success) throw new Error(data?.message || "Unable to resend email.");
-          App.toast("Ticket email resent.","success");
-          await loadRecent();
-        } catch(err) { App.toast(err.message || "Unable to resend email.","error"); }
-        finally { App.setBusy(btn,false); }
-      };
-    });
 
     recentBody.querySelectorAll(".edit-row").forEach(btn => {
       btn.onclick = () => {
-        const r = data.find(x => x.id === btn.dataset.id);
+        const r = recentRows.find(x => x.id === btn.dataset.id);
         editForm.registration_id.value = r.id;
         editForm.or_number.value = r.or_number || "";
         editForm.amount_paid.value = r.amount_paid ?? "";
@@ -86,6 +98,44 @@
         editForm.payment_method.value = r.payment_method || "";
         editForm.notes.value = r.notes || "";
         editDialog.showModal();
+      };
+    });
+
+    recentBody.querySelectorAll(".resend-row").forEach(btn => {
+      btn.onclick = async () => {
+        App.setBusy(btn, true, "Queued…");
+        try {
+          const { data, error } = await sb.functions.invoke("resend-ticket", {
+            body: { registration_id: btn.dataset.id }
+          });
+          if (error) throw error;
+          if (!data?.success) throw new Error(data?.message || "Unable to queue email.");
+          App.toast("Ticket email queued. It will send shortly.", "success");
+          await loadRecent();
+        } catch (err) {
+          App.toast(err.message, "error");
+        } finally {
+          App.setBusy(btn, false);
+        }
+      };
+    });
+
+    recentBody.querySelectorAll(".retry-row").forEach(btn => {
+      btn.onclick = async () => {
+        App.setBusy(btn, true, "Queued…");
+        try {
+          const { data, error } = await sb.functions.invoke("retry-sync", {
+            body: { registration_id: btn.dataset.id }
+          });
+          if (error) throw error;
+          if (!data?.success) throw new Error(data?.message || "Unable to queue backup.");
+          App.toast("Backup refresh queued.", "success");
+          await loadRecent();
+        } catch (err) {
+          App.toast(err.message, "error");
+        } finally {
+          App.setBusy(btn, false);
+        }
       };
     });
   }
@@ -127,10 +177,8 @@
       const { data, error } = await sb.functions.invoke("issue-tickets", { body: payload });
       if (error) throw error;
       if (!data?.success) throw new Error(data?.message || "Unable to issue tickets.");
-      const syncText = data.sheet_synced ? "Backup synced." : "Backup sync needs attention.";
-      const mailText = data.email_sent ? "Confirmation email sent." : "Email delivery needs attention.";
       document.getElementById("successMessage").textContent =
-        `${data.transaction_number} created. ${syncText} ${mailText}`;
+        `${data.transaction_number} created. Ticket is valid. Backup and confirmation email are queued automatically.`;
       document.getElementById("issuedTickets").innerHTML = data.tickets.map(t =>
         `<div><strong>${App.escapeHtml(t.ticket_number)}</strong><span>${App.escapeHtml(t.holder_name)}</span></div>`
       ).join("");
@@ -167,18 +215,14 @@
       if (error) throw error;
       if (!data?.success) throw new Error(data?.message || "Update failed.");
       editDialog.close();
-      App.toast(
-        data.sheet_synced
-          ? "Payment details updated and backup synced."
-          : "Payment updated. Backup sync needs attention.",
-        data.sheet_synced ? "success" : "info"
-      );
+      App.toast("Payment details updated. Backup refresh queued.", "success");
       await loadRecent();
     } catch (err) {
       App.toast(err.message || "Update failed.", "error");
     } finally { App.setBusy(btn, false); }
   });
 
+  document.getElementById("recentSearch")?.addEventListener("input", renderRecent);
   document.getElementById("refreshBtn").onclick = loadRecent;
   await loadRecent();
 })();

@@ -75,11 +75,11 @@
       </div>
 
       <aside class="panel sticky-panel">
-        <div class="panel-head"><div><h2>Recent Transactions</h2><p>Latest records from Finance</p></div><button class="btn btn-ghost btn-small" id="refreshBtn">Refresh</button></div>
+        <div class="panel-head responsive-head"><div><h2>Recent Transactions</h2><p>Edit OR/payment details, resend email, or retry backup</p></div><div class="toolbar"><input id="recentSearch" class="search compact-search" placeholder="Search transaction or student"><button class="btn btn-ghost btn-small" id="refreshBtn">Refresh</button></div></div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Transaction</th><th>Student</th><th>Qty</th><th>OR #</th><th></th></tr></thead>
-            <tbody id="recentBody"><tr><td colspan="5" class="empty">Loading…</td></tr></tbody>
+            <thead><tr><th>Transaction</th><th>Student</th><th>Qty</th><th>OR #</th><th>Backup</th><th>Email</th><th>Actions</th></tr></thead>
+            <tbody id="recentBody"><tr><td colspan="7" class="empty">Loading…</td></tr></tbody>
           </table>
         </div>
       </aside>

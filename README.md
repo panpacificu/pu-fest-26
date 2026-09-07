@@ -1,6 +1,6 @@
 # PU Fest 2026 Ticketing System
 
-**Version:** 1.1.0  
+**Version:** 1.3.0
 **Event:** PU Fest 2026  
 **Date:** October 30, 2026  
 **Time:** 1:00 PM–6:00 PM  
@@ -78,3 +78,14 @@ The system now uses Supabase as the primary database while mirroring issued regi
 Google Apps Script sends the professional ticket email using the Workspace account that deploys the Web App.
 
 The raw QR secret remains only in Supabase and is never written to the backup Sheet.
+
+## v1.2.0 Worker Model
+
+Google Apps Script now pulls pending jobs from Supabase on a one-minute trigger. This avoids direct Supabase → Google Web App requests while preserving automatic Sheet backup and professional email delivery.
+
+
+## v1.3.0 Admin + Finance
+
+The Admin dashboard now includes registrations, ticket management, gate activity, recent check-ins, activity logs, staff management, search/filter controls, and CSV export.
+
+Finance can resend ticket emails and retry Google Sheet backup synchronization directly from the recent transactions list.
