@@ -1,105 +1,165 @@
-# PU Fest 2026 Ticketing System — Setup Notes (v1.0.1)
+# PU Fest 2026 Ticketing System — Setup Notes (v1.1.0)
 
-## 1. Supabase Project
+## Architecture
 
-Configured project:
+- **GitHub Pages** — frontend
+- **Supabase** — primary database, authentication, ticket generation, QR validation, one-time check-in
+- **Google Sheets** — secondary backup of registrations and issued ticket metadata
+- **Google Apps Script / MailApp** — professional ticket confirmation email
 
+Supabase remains the source of truth. The Sheet is not used to decide whether a QR is valid or already used.
+
+---
+
+## Current Project Details
+
+### Supabase
 - Project URL: `https://kimhqlenfulaflyfhrez.supabase.co`
-- Publishable key: already placed in `assets/js/config.js`
+- Publishable key: already configured in `assets/js/config.js`
 
-The publishable key is designed for browser use. Do **not** place any secret/service-role key in the repository.
+### GitHub
+- Repository: `https://github.com/panpacificu/pu-fest-26`
+- Expected Pages URL: `https://panpacificu.github.io/pu-fest-26`
 
-## 2. Run the Database Setup
+### Google Sheet
+- Name: `PU-Fest-Tickets 2026 (Backup)`
+- Spreadsheet ID: `1G-stDal6Rpg3CA2TGr9zTa-e0G8_E7ZswpsiID3y-dw`
 
-Open:
+---
 
-**Supabase Dashboard → SQL Editor → New query**
+# UPGRADE FROM v1.0.1
 
-Paste the complete contents of:
-
-`supabase/setup.sql`
-
-Run it once.
-
-This creates:
-
-- profiles
-- events
-- registrations
-- tickets
-- ticket_secrets
-- checkin_logs
-- email_logs
-- audit_logs
-- role helpers
-- RLS policies
-- atomic ticket redemption function
-- atomic registration/ticket creation function
-- PU Fest 2026 event seed
-
-## 3. Configure Authentication
-
-Go to:
-
-**Authentication → Providers → Email**
-
-Use email/password authentication for staff.
-
-Recommended production setting:
-
-- Disable public user sign-ups
-- Staff accounts are created by Admin through the system or manually in Supabase
-
-For the very first administrator:
-
-1. Go to **Authentication → Users**
-2. Add a user manually with email + password
-3. Copy `supabase/bootstrap_admin.sql`
-4. Replace `YOUR_ADMIN_EMAIL@panpacificu.edu.ph`
-5. Run the SQL
-
-After that, the Admin page can create Finance, Event Admin, Scanner, and Viewer accounts.
-
-## 4. Configure Resend
-
-The system is prepared for professional transactional email through Resend.
-
-Before production sending:
-
-1. Create a Resend account
-2. Verify `panpacificu.edu.ph` or an approved sending subdomain
-3. Complete the required DNS records (SPF/DKIM)
-4. Create an API key
-
-Configured sender:
-
-- Display name: `Panpacific University | PU Fest 2026`
-- Email: `marketing.staff@panpacificu.edu.ph`
-- Reply-To: `marketing.staff@panpacificu.edu.ph`
-
-Resend requires the sending domain to be verified before this address can be used reliably in production.
-
-## 5. Supabase Edge Function Secrets
+## Step 1 — Run the v1.1.0 Supabase Migration
 
 In:
 
-**Supabase Dashboard → Edge Functions → Secrets**
+**Supabase → SQL Editor → New query**
+
+Paste and run:
+
+`supabase/migration_v1.1.0.sql`
+
+Expected result:
+
+`Success. No rows returned`
+
+This adds Sheet/email sync fields to existing registrations.
+
+Do **not** rerun `setup.sql` just for this update.
+
+---
+
+## Step 2 — Set Up Google Apps Script
+
+Open:
+
+`PU-Fest-Tickets 2026 (Backup)`
+
+Then:
+
+**Extensions → Apps Script**
+
+Delete the default code and paste the complete contents of:
+
+`google-apps-script/Code.gs`
+
+Save the project. Suggested Apps Script project name:
+
+`PU Fest 2026 Tickets API`
+
+### Run the one-time setup
+
+From the function selector choose:
+
+`setupPUFestSystem`
+
+Click **Run**.
+
+Google will ask for authorization. Authorize it using:
+
+`marketing.staff@panpacificu.edu.ph`
+
+or the Workspace account that should send the official ticket emails.
+
+The setup will automatically create/format these tabs:
+
+1. Registrations
+2. Tickets
+3. Email Logs
+4. Sync Logs
+
+It also creates a long private **Sync Secret**.
+
+Copy the Sync Secret shown in the popup/execution log.
+
+**Do not place this secret in GitHub or frontend JavaScript.**
+
+---
+
+## Step 3 — Deploy Apps Script as a Web App
+
+In Apps Script:
+
+**Deploy → New deployment**
+
+Type:
+
+`Web app`
+
+Configure:
+
+- Description: `PU Fest 2026 Ticket API v1.1.0`
+- Execute as: **Me**
+- Who has access: **Anyone**
+
+Then click:
+
+**Deploy**
+
+Copy the Web App URL ending in:
+
+`/exec`
+
+Open that URL in a browser.
+
+You should see JSON similar to:
+
+```json
+{
+  "success": true,
+  "service": "PU Fest 2026 Sheets Backup + Email Bridge",
+  "version": "1.1.0"
+}
+```
+
+If your Google Workspace administrator does not allow an "Anyone" Web App, the Supabase-to-Apps-Script bridge will need a different authentication/deployment method.
+
+---
+
+## Step 4 — Add Supabase Edge Function Secrets
+
+Go to:
+
+**Supabase → Edge Functions → Secrets**
 
 Add:
 
 ```text
-RESEND_API_KEY=re_xxxxxxxxx
-EMAIL_FROM=Panpacific University | PU Fest 2026 <marketing.staff@panpacificu.edu.ph>
-EMAIL_REPLY_TO=marketing.staff@panpacificu.edu.ph
+APPS_SCRIPT_WEBAPP_URL=<YOUR /exec WEB APP URL>
+PU_FEST_SYNC_SECRET=<THE SECRET GENERATED BY setupPUFestSystem>
 SITE_URL=https://panpacificu.github.io/pu-fest-26
 ALLOWED_ORIGINS=https://panpacificu.github.io,http://localhost:5500,http://127.0.0.1:5500
 ```
 
-Supabase automatically provides the project URL and server credentials to deployed functions. The function helpers support both current Supabase secret/publishable key environment variables and legacy service-role/anon variables.
+No Resend key is needed in v1.1.0.
 
-## 6. Deploy Edge Functions
+Never add the Sync Secret or Supabase secret/service-role key to GitHub.
 
-Using Supabase CLI from the project root:
+---
+
+## Step 5 — Deploy / Redeploy Supabase Edge Functions
+
+From the project folder with Supabase CLI:
 
 ```bash
 supabase login
@@ -112,142 +172,148 @@ supabase functions deploy ticket-lookup
 supabase functions deploy resend-ticket
 supabase functions deploy update-registration
 supabase functions deploy admin-create-user
+supabase functions deploy void-ticket
 ```
 
-`ticket-view` is intentionally public because students are not required to log in. It only returns limited ticket/event information after validating the high-entropy QR token.
+The updated functions include the shared:
 
-All staff mutation functions verify the signed-in Supabase user and role inside the function.
+`supabase/functions/_shared/apps-script.ts`
 
-## 7. GitHub Pages
+file automatically when deployed.
 
-Repository:
+---
 
-`https://github.com/panpacificu/pu-fest-26`
+# Google Sheet Backup Contents
 
-Upload the contents of this ZIP into the repository root.
+## Registrations
 
-Then:
+Backs up:
 
-**GitHub → Settings → Pages**
+- Transaction number
+- Registration ID
+- Student number
+- Full name
+- Email
+- Campus
+- Course/program
+- Year/section
+- Ticket quantity
+- Price
+- Expected total
+- Amount paid
+- OR/reference number
+- Payment date/method
+- Notes
+- Registration status
+- Email status
+- Sheet sync status
+- Created/synced timestamps
 
-Set:
+## Tickets
 
-- Source: Deploy from a branch
-- Branch: `main`
-- Folder: `/ (root)`
+Backs up:
 
-Expected site URL:
+- Ticket number
+- Internal ticket ID
+- Transaction number
+- Registration ID
+- Holder name
+- Initial/current synced status
+- Created/synced timestamps
 
-`https://panpacificu.github.io/pu-fest-26/`
+**Raw QR tokens are never written to Google Sheets.**
 
-## 8. Ticket Policy Defaults
+---
 
-Configured in `assets/js/config.js` and the event seed:
+# Email Sender
+
+The Apps Script email is configured as:
+
+**Display Name:**  
+`Panpacific University | PU Fest 2026`
+
+**Reply-To:**  
+`marketing.staff@panpacificu.edu.ph`
+
+The actual sending mailbox is the Google account that owns/executes the deployed Apps Script Web App.
+
+For the expected sender address, deploy/authorize the script while signed in as:
+
+`marketing.staff@panpacificu.edu.ph`
+
+---
+
+# What Happens When Finance Issues a Ticket
 
 ```text
-Ticket Price: PHP 499
-Maximum Tickets: 5
-Collect individual ticket-holder names: OFF
+Finance
+  ↓
+Supabase creates registration
+  ↓
+Supabase creates unique QR ticket(s)
+  ↓
+Supabase sends backup/email payload to Apps Script
+  ↓
+Google Sheet receives backup
+  ↓
+MailApp sends professional HTML ticket email
+  ↓
+Apps Script replies to Supabase
+  ↓
+Supabase records:
+  • Sheet Sync: synced/failed
+  • Email: sent/failed
 ```
 
-When individual attendee names are OFF, all tickets in a transaction display the purchaser name.
+A failure in Google Sheets/email does **not** delete or regenerate the Supabase ticket.
 
-To enable holder names later, set:
+---
 
-```js
-collectTicketHolderNames: true
-```
+# OR / Payment Corrections
 
-in `assets/js/config.js`.
-
-The database already supports a separate `holder_name` on every ticket.
-
-## 9. OR / Finance Editing
-
-Finance can update:
+When Finance updates:
 
 - OR/reference number
-- amount paid
-- payment date
-- payment method
-- notes
+- Amount paid
+- Payment date
+- Payment method
+- Notes
 
-These changes are recorded in `audit_logs`.
+Supabase updates first, then the corresponding `Registrations` row in Google Sheets is updated.
 
-For safety, ticket quantity and QR identity are not modified through the edit screen after ticket issuance.
+Ticket QR codes do not change.
 
-## 10. QR Behavior
+---
 
-A QR contains a URL like:
+# One-Time QR Security
 
-```text
-https://panpacificu.github.io/pu-fest-26/ticket.html?t=<random-token>
-```
+Google Sheets and Apps Script do not validate admission.
 
-The random token itself contains no student name, course, email, or payment details.
+All scans go to Supabase, where the ticket is atomically changed:
 
-On scan:
+`UNUSED → USED`
 
-1. Scanner extracts the token
-2. Secure Edge Function validates it
-3. Postgres locks the ticket row
-4. If UNUSED → it becomes USED
-5. If already USED → duplicate is rejected
-6. If VOID → entry is rejected
-7. Every attempt is logged
+A second scan of the same QR is rejected.
 
-Because the database redemption is performed under a row lock, near-simultaneous scans of the same QR cannot both succeed.
+---
 
-## 11. Email QR Codes
+# Production Test
 
-The ticket email uses inline CID QR images, so the QR appears directly in compatible email clients.
+After all steps are complete:
 
-The email also contains a large `View Ticket` button and ticket number as fallbacks.
-
-## 12. Branding
-
-Current V1 uses a clean PanpacificU-inspired navy/blue/gold visual system.
-
-When final PU Fest artwork/logo is available, replace or extend:
-
-- `assets/css/app.css`
-- email header in `supabase/functions/_shared/email.ts`
-
-No database changes are required for a visual refresh.
-
-## 13. Production Test Checklist
-
-Before selling tickets:
-
-1. Create one Admin account
-2. Create one Finance account
-3. Create one Scanner account
-4. Issue a PHP 499 test ticket to a real email
-5. Confirm QR appears in email
-6. Open `ticket.html`
-7. Scan QR on phone
-8. Confirm first scan = VALID
-9. Scan again
-10. Confirm second scan = ALREADY USED
-11. Test OR correction
-12. Test resend email
-13. Test void ticket from database/admin workflow before event day
-14. Test scanner on venue Wi-Fi and mobile data
-
-## 14. Internet Requirement
-
-V1 is an online validation system. Guards need working internet to validate/check in tickets.
-
-For a future version, an offline-safe queue can be designed, but one-time redemption across multiple gates is most reliable when scanners remain connected to Supabase.
-
-## 15. Role Routing
-
-After login:
-
-- `admin` → `admin.html`
-- `event_admin` → `admin.html`
-- `viewer` → `admin.html`
-- `finance` → `finance.html`
-- `scanner` → `scanner.html`
-
-If an active user manually opens a page outside their role, the system redirects them to their assigned module instead of signing them out.
+1. Log in as Finance
+2. Create one test transaction for PHP 499
+3. Confirm Admin shows:
+   - Backup = SYNCED
+   - Email = SENT
+4. Open Google Sheet:
+   - Registrations row exists
+   - Ticket row exists
+   - Email Logs shows SENT
+5. Check student inbox
+6. Confirm professional email + QR
+7. Open/scan QR
+8. First scan → VALID
+9. Second scan → ALREADY USED
+10. Edit OR number in Finance
+11. Confirm Google Sheet registration row updates

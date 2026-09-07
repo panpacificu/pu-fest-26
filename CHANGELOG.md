@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.1.0 — Google Sheets Backup + Apps Script Email
+
+- Switched transactional ticket email from Resend to Google Apps Script MailApp
+- Added Google Sheets backup bridge
+- Configured `PU-Fest-Tickets 2026 (Backup)`
+- Added automatic Registrations, Tickets, Email Logs, and Sync Logs tabs
+- Added secure shared-secret authentication between Supabase and Apps Script
+- Raw QR secrets remain excluded from Google Sheets
+- QR images are generated server-side in Supabase and embedded in email
+- Added Sheet sync status fields to Supabase registrations
+- Added email sent/error timestamps to Supabase
+- Finance OR/payment corrections now re-sync to Google Sheets
+- Admin dashboard now shows both Backup and Email status
+- Ticket creation remains successful even when backup/email delivery temporarily fails
+- Added v1.1.0 migration SQL
+- Removed Resend dependency from ticket email workflow
+
 ## 1.0.1 — Compact UI & Role Routing
 
 - Inter font applied across the entire system
