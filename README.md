@@ -1,6 +1,6 @@
 # PU Fest 2026 Ticketing System
 
-**Version:** 1.3.0
+**Version:** 1.4.2
 **Event:** PU Fest 2026  
 **Date:** October 30, 2026  
 **Time:** 1:00 PM–6:00 PM  
@@ -89,3 +89,28 @@ Google Apps Script now pulls pending jobs from Supabase on a one-minute trigger.
 The Admin dashboard now includes registrations, ticket management, gate activity, recent check-ins, activity logs, staff management, search/filter controls, and CSV export.
 
 Finance can resend ticket emails and retry Google Sheet backup synchronization directly from the recent transactions list.
+
+
+## v1.3.1 Ticket Security
+
+New ticket display IDs are random and non-sequential, for example:
+
+`PUF26-7A3F-9C2D-81B4-E6F1`
+
+The visible ticket number is primarily for staff/manual lookup. The QR itself continues to use a separate high-entropy secret token and remains the actual secure admission credential.
+
+Existing sequential test tickets remain valid.
+
+
+## v1.4.0 Finance Workflow
+
+Finance now works from a single ticket table. Payment receipt photos are optional and private. New tickets are not emailed automatically; Finance reviews the record and explicitly presses Send Ticket. Delivery status updates on the table after the Apps Script worker sends the email.
+
+
+## v1.4.2 — New Supabase Project
+
+This build is configured for `vcinzohrrqvowivxkjnp`.
+
+The application workflow is unchanged. Finance, Google Sheets backup, marketing email delivery, secure QR tickets, and one-time scanning continue to work the same way.
+
+For a fresh installation, follow `NEW_SUPABASE_SETUP.md`.

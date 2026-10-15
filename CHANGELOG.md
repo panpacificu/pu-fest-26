@@ -1,5 +1,69 @@
 # Changelog
 
+## 1.4.2 — New Supabase Project Reset
+
+- Switched frontend to new Supabase project `vcinzohrrqvowivxkjnp`
+- Updated publishable browser key
+- Updated Google Apps Script worker URL to the new Supabase project
+- Kept existing marketing-email ticket delivery workflow
+- Kept Finance table dashboard from v1.4.1
+- Added clean fresh-database installation guide
+- `setup.sql` now represents the current complete schema for a new database
+- No old ticket data is bundled or migrated
+
+## 1.4.1 — Finance Dashboard Correction
+
+- Restored the original automatic ticket-email workflow
+- Ticket emails continue to be sent by the existing Google Apps Script / marketing email setup
+- Creating a ticket automatically queues the email as before
+- Finance remains table-first for easier day-to-day use
+- Shows ticket/student, Control/OR, receipt, ticket status, and email status
+- Action button is now `Resend Ticket`, not the primary sending workflow
+- Receipt photo support remains optional
+- Email status continues to update automatically from Pending/Processing to Sent
+- No Apps Script changes required
+
+## 1.4.0 — Finance Table Workflow
+
+- Redesigned Finance into a table-first workflow
+- New Ticket form moved into a popup
+- One row per issued ticket
+- Added Control / OR number column
+- Added optional payment receipt photo
+- Added private `payment-receipts` storage bucket
+- Receipt thumbnails can be viewed from the table
+- Payment/control/receipt details can be updated from the row
+- New tickets no longer email automatically
+- Added explicit `Send Ticket` action
+- Email status now moves from `NOT SENT` → `QUEUED` → `SENDING` → `SENT`
+- Sent tickets can still be resent when necessary
+- Finance table auto-refreshes while an email is being processed
+- Google Sheet backup still happens automatically after ticket creation
+- Requires v1.4.0 SQL migration
+- Requires redeploying `issue-tickets` and `update-registration`
+
+## 1.3.2 — Supabase pgcrypto Hotfix
+
+- Fixed `gen_random_bytes(integer) does not exist`
+- Qualified Supabase pgcrypto call as `extensions.gen_random_bytes(...)`
+- Added `extensions` to the generator function search path
+- No Edge Function redeployment required
+- No Apps Script changes required
+- Existing tickets remain valid
+
+## 1.3.1 — Ticket ID Security Hardening
+
+- Replaced predictable sequential public ticket numbers for all NEW tickets
+- New format: `PUF26-XXXX-XXXX-XXXX`
+- Ticket public codes are generated from cryptographically secure random bytes
+- Approx. 64 bits of randomness in the visible ticket code
+- Existing issued tickets remain valid and unchanged
+- QR admission token remains the stronger 256-bit secret credential
+- Transaction numbers remain sequential because they are administrative references only
+- Updated scanner manual lookup placeholder and verification instructions
+- No Edge Function redeployment required
+- Requires one SQL migration
+
 ## 1.3.0 — Admin + Finance Polish
 
 - Fixed Admin Dashboard stuck on `Loading...`

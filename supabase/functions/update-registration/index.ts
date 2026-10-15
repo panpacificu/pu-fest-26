@@ -11,7 +11,7 @@ Deno.serve(async req => {
     const u = body.updates || {};
     const allowed: any = {};
 
-    for (const key of ["or_number", "amount_paid", "payment_date", "payment_method", "notes"]) {
+    for (const key of ["or_number", "receipt_path", "amount_paid", "payment_date", "payment_method", "notes"]) {
       if (Object.prototype.hasOwnProperty.call(u, key)) allowed[key] = u[key];
     }
 
@@ -23,7 +23,7 @@ Deno.serve(async req => {
 
     const { data: old, error: oldError } = await admin
       .from("registrations")
-      .select("or_number,amount_paid,payment_date,payment_method,notes")
+      .select("or_number,receipt_path,amount_paid,payment_date,payment_method,notes")
       .eq("id", id)
       .single();
 

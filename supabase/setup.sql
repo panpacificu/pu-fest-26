@@ -1,7 +1,7 @@
 -- PU FEST 2026 TICKETING SYSTEM
--- Version 1.0.0
+-- Version 1.4.2 — Fresh Database Setup
 
-create extension if not exists pgcrypto;
+create extension if not exists pgcrypto with schema extensions;
 
 do $$ begin
   create type public.staff_role as enum ('admin','finance','event_admin','scanner','viewer');
@@ -62,6 +62,7 @@ create table if not exists public.registrations (
   expected_total numeric(10,2) not null,
   amount_paid numeric(10,2) not null,
   or_number text,
+  receipt_path text,
   payment_date date not null,
   payment_method text not null,
   notes text,
@@ -158,7 +159,7 @@ for each row execute procedure public.set_updated_at();
 
 create or replace function public.handle_new_user()
 returns trigger
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, extensions as $$
 begin
   insert into public.profiles(id,email,full_name,role,active)
   values(
@@ -190,6 +191,30 @@ language sql stable security definer set search_path = public as $$
 $$;
 
 -- Atomic creation called only by service-role Edge Function.
+
+create or replace function public.generate_puf26_ticket_number()
+returns text
+language plpgsql security definer set search_path = public as $$
+declare
+  raw_code text;
+  candidate text;
+begin
+  loop
+    raw_code := upper(encode(extensions.gen_random_bytes(8), 'hex'));
+    candidate := 'PUF26-' ||
+      substr(raw_code,1,4) || '-' ||
+      substr(raw_code,5,4) || '-' ||
+      substr(raw_code,9,4) || '-' ||
+      substr(raw_code,13,4);
+
+    exit when not exists (
+      select 1 from public.tickets where ticket_number = candidate
+    );
+  end loop;
+
+  return candidate;
+end $$;
+
 create or replace function public.create_registration_and_tickets(
   p_registration jsonb,
   p_tokens jsonb
@@ -240,7 +265,7 @@ begin
     select value, ordinality from jsonb_array_elements(p_tokens) with ordinality
   loop
     ticket_id := gen_random_uuid();
-    ticket_no := 'PUF26-' || lpad(nextval('public.puf26_ticket_seq')::text,6,'0');
+    ticket_no := public.generate_puf26_ticket_number();
 
     insert into public.tickets(id,event_id,registration_id,ticket_number,holder_name,token_hash)
     values(ticket_id,ev.id,reg_id,ticket_no,tok->>'holder_name',tok->>'token_hash');
@@ -387,3 +412,61 @@ grant execute on function public.create_registration_and_tickets(jsonb,jsonb) to
 grant execute on function public.redeem_ticket(text,text,uuid,text,text) to service_role;
 grant execute on function public.current_staff_role() to authenticated;
 grant execute on function public.is_active_staff() to authenticated;
+
+
+revoke execute on function public.generate_puf26_ticket_number() from public,anon,authenticated;
+grant execute on function public.generate_puf26_ticket_number() to service_role;
+
+
+-- v1.4.0 private payment receipt storage
+insert into storage.buckets(id,name,public,file_size_limit,allowed_mime_types)
+values(
+  'payment-receipts','payment-receipts',false,5242880,
+  array['image/jpeg','image/png','image/webp']
+)
+on conflict(id) do update set
+  public=excluded.public,
+  file_size_limit=excluded.file_size_limit,
+  allowed_mime_types=excluded.allowed_mime_types;
+
+drop policy if exists "PU Fest receipt read" on storage.objects;
+create policy "PU Fest receipt read" on storage.objects for select to authenticated
+using(
+  bucket_id='payment-receipts'
+  and public.current_staff_role() in (
+    'admin'::public.staff_role,'finance'::public.staff_role,'event_admin'::public.staff_role
+  )
+);
+
+drop policy if exists "PU Fest receipt upload" on storage.objects;
+create policy "PU Fest receipt upload" on storage.objects for insert to authenticated
+with check(
+  bucket_id='payment-receipts'
+  and public.current_staff_role() in (
+    'admin'::public.staff_role,'finance'::public.staff_role,'event_admin'::public.staff_role
+  )
+);
+
+drop policy if exists "PU Fest receipt update" on storage.objects;
+create policy "PU Fest receipt update" on storage.objects for update to authenticated
+using(
+  bucket_id='payment-receipts'
+  and public.current_staff_role() in (
+    'admin'::public.staff_role,'finance'::public.staff_role,'event_admin'::public.staff_role
+  )
+)
+with check(
+  bucket_id='payment-receipts'
+  and public.current_staff_role() in (
+    'admin'::public.staff_role,'finance'::public.staff_role,'event_admin'::public.staff_role
+  )
+);
+
+drop policy if exists "PU Fest receipt delete" on storage.objects;
+create policy "PU Fest receipt delete" on storage.objects for delete to authenticated
+using(
+  bucket_id='payment-receipts'
+  and public.current_staff_role() in (
+    'admin'::public.staff_role,'finance'::public.staff_role,'event_admin'::public.staff_role
+  )
+);

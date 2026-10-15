@@ -420,3 +420,47 @@ dialog::backdrop{background:rgba(5,17,38,.58);backdrop-filter:blur(2px)}
   .activity-row{grid-template-columns:10px 1fr}
   .activity-row time{grid-column:2}
 }
+
+
+/* v1.4.0 Finance table-first workflow */
+.finance-table-page{max-width:1440px}
+.finance-list-panel{padding-bottom:0}
+.finance-ticket-table-wrap{max-height:calc(100vh - 235px);min-height:420px}
+.finance-ticket-table{min-width:1040px}
+.finance-ticket-table th:nth-child(1){min-width:260px}
+.finance-ticket-table th:nth-child(2){min-width:145px}
+.finance-ticket-table th:nth-child(3){min-width:105px}
+.finance-ticket-table th:nth-child(4){min-width:110px}
+.finance-ticket-table th:nth-child(5){min-width:135px}
+.finance-ticket-table th:nth-child(6){min-width:120px}
+.finance-ticket-table td{vertical-align:middle}
+.student-name{display:block;margin-top:4px;font-size:.75rem;font-weight:600;color:var(--ink)}
+.finance-toolbar .search{min-width:260px}
+.wide-dialog{width:min(820px,calc(100% - 24px))}
+.finance-dialog-card{width:min(780px,100%);max-height:90vh;overflow:auto}
+.dialog-sub{margin:-4px 0 15px;color:var(--muted);font-size:.76rem;line-height:1.55}
+.optional-text{font-weight:400;color:var(--muted)}
+.receipt-upload-label small{display:block;margin-top:5px}
+.receipt-thumb-btn{display:block;border:0;padding:0;background:transparent;cursor:pointer}
+.receipt-thumb{width:62px;height:48px;object-fit:cover;border-radius:8px;border:1px solid var(--line);background:#f6f8fb}
+.receipt-thumb:hover{opacity:.86}
+.receipt-empty,.control-cell,.inline-edit{border:0;background:transparent;padding:0;font-family:inherit;cursor:pointer;text-align:left}
+.receipt-empty{font-size:.7rem;color:var(--blue);font-weight:700}
+.inline-edit{display:block;margin-top:4px;font-size:.62rem;color:var(--muted);text-decoration:underline}
+.control-cell strong,.control-cell small{display:block}
+.control-cell strong{font-size:.75rem;color:var(--ink)}
+.control-cell small{margin-top:4px}
+.control-cell:hover strong{color:var(--blue)}
+.status-not_sent{background:#eef0f3;color:#5d6570}
+.status-processing{background:#fff4d9;color:#8a6200}
+.email-error-text{display:block;max-width:180px;margin-top:5px;color:#a62f3b;white-space:normal}
+.receipt-dialog{width:min(760px,calc(100% - 24px))}
+.receipt-view-card{width:min(720px,100%)}
+.receipt-view-card img{display:block;max-width:100%;max-height:75vh;margin:12px auto 0;object-fit:contain;border-radius:10px;background:#f4f5f7}
+.send-ticket-btn[disabled]{opacity:.65;cursor:not-allowed}
+
+@media(max-width:760px){
+  .finance-toolbar{display:grid;grid-template-columns:1fr 1fr;width:100%}
+  .finance-toolbar .search{grid-column:1/-1;min-width:0;width:100%}
+  .wide-dialog{width:calc(100% - 14px)}
+}

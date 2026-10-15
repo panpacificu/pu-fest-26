@@ -1,6 +1,6 @@
 /**
  * PU FEST 2026 — GOOGLE SHEETS BACKUP + EMAIL WORKER
- * Version 1.2.0
+ * Version 1.2.1
  *
  * Pull model:
  * Apps Script requests pending jobs FROM Supabase every minute.
@@ -8,7 +8,7 @@
  */
 
 const PU_FEST_CONFIG = Object.freeze({
-  VERSION: '1.2.0',
+  VERSION: '1.2.1',
   SHEET_ID: '1G-stDal6Rpg3CA2TGr9zTa-e0G8_E7ZswpsiID3y-dw',
   EVENT_NAME: 'PU Fest 2026',
   EVENT_DATE: 'October 30, 2026',
@@ -17,7 +17,7 @@ const PU_FEST_CONFIG = Object.freeze({
   TICKET_PRICE: 499,
   SENDER_NAME: 'Panpacific University | PU Fest 2026',
   REPLY_TO: 'marketing.staff@panpacificu.edu.ph',
-  WORKER_URL: 'https://kimhqlenfulaflyfhrez.supabase.co/functions/v1/apps-script-pull',
+  WORKER_URL: 'https://vcinzohrrqvowivxkjnp.supabase.co/functions/v1/apps-script-pull',
   SECRET_PROPERTY: 'PU_FEST_SYNC_SECRET',
   BATCH_SIZE: 10
 });

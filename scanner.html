@@ -23,8 +23,8 @@
     <div id="reader"></div>
     <p class="scanner-help">Point the camera at the student's PU Fest QR code.</p>
     <div class="manual-box">
-      <span>QR not scanning?</span>
-      <div><input id="manualTicket" placeholder="PUF26-000001"><button class="btn btn-ghost" id="lookupBtn">Find Ticket</button></div>
+      <span>QR not scanning? Enter the exact ticket code and verify the holder details before manual check-in.</span>
+      <div><input id="manualTicket" placeholder="PUF26-7A3F-9C2D-81B4-E6F1"><button class="btn btn-ghost" id="lookupBtn">Find Ticket</button></div>
     </div>
   </section>
 
@@ -43,7 +43,7 @@
     <button class="dialog-x" onclick="document.getElementById('lookupDialog').close()">×</button>
     <span class="kicker">MANUAL LOOKUP</span><h2 id="lookupTitle">Ticket</h2>
     <div id="lookupContent"></div>
-    <button class="btn btn-primary" id="manualCheckinBtn">Manual Check-in</button>
+    <button class="btn btn-primary" id="manualCheckinBtn">Confirm Manual Check-in</button>
   </div>
 </dialog>
 

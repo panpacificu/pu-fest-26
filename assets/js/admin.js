@@ -89,7 +89,7 @@
     if (filter === "sent_synced") {
       return r.sheet_sync_status === "synced" && r.email_status === "sent";
     }
-    if (filter === "email_pending") return ["pending", "processing"].includes(r.email_status);
+    if (filter === "email_pending") return ["not_sent", "pending", "processing"].includes(r.email_status);
     if (filter === "backup_pending") return ["pending", "processing"].includes(r.sheet_sync_status);
     return true;
   }
