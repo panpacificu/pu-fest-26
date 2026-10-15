@@ -29,11 +29,11 @@
   async function loadStats() {
     try {
       const [r, t, used, unused, salesResult] = await Promise.all([
-        sb.from("registrations").select("*", { count: "exact", head: true }),
-        sb.from("tickets").select("*", { count: "exact", head: true }),
+        sb.from("registrations").select("*", { count: "exact", head: true }).is("archived_at", null),
+        sb.from("tickets").select("*", { count: "exact", head: true }).in("status", ["used","unused"]),
         sb.from("tickets").select("*", { count: "exact", head: true }).eq("status", "used"),
         sb.from("tickets").select("*", { count: "exact", head: true }).eq("status", "unused"),
-        sb.from("registrations").select("amount_paid")
+        sb.from("registrations").select("amount_paid").is("archived_at", null)
       ]);
 
       const firstError = [r, t, used, unused, salesResult].find(x => x.error)?.error;
@@ -68,8 +68,9 @@
           "id", "transaction_number", "student_number", "first_name", "middle_name", "last_name",
           "email", "course", "year_level", "section", "ticket_quantity", "amount_paid",
           "or_number", "sheet_sync_status", "sheet_sync_error", "email_status", "email_error",
-          "created_at"
+          "purchase_source", "paid_ticket_quantity", "free_ticket_quantity", "archived_at", "created_at"
         ].join(","))
+        .is("archived_at", null)
         .order("created_at", { ascending: false })
         .limit(500);
 
@@ -115,7 +116,7 @@
         <tr>
           <td>
             <strong>${App.escapeHtml(r.transaction_number)}</strong>
-            <small>${App.formatDateTime(r.created_at)}</small>
+            <small>${App.escapeHtml((r.purchase_source || "finance").toUpperCase())} • ${App.formatDateTime(r.created_at)}</small>
           </td>
           <td>
             <strong>${App.escapeHtml(App.fullName(r))}</strong>
@@ -125,7 +126,7 @@
             ${App.escapeHtml(r.course)}
             <small>${App.escapeHtml(`${r.year_level} • ${r.section}`)}</small>
           </td>
-          <td>${r.ticket_quantity}</td>
+          <td>${r.paid_ticket_quantity || r.ticket_quantity}${r.free_ticket_quantity ? ` <span class="bundle-badge">+${r.free_ticket_quantity} FREE</span>` : ""}</td>
           <td>${App.money(r.amount_paid)}</td>
           <td>${App.escapeHtml(r.or_number || "Pending")}</td>
           <td${sheetTitle}>${App.badge(r.sheet_sync_status || "pending")}</td>
@@ -135,6 +136,7 @@
               <div class="row-actions">
                 <button class="btn btn-ghost btn-small resend-email" data-id="${r.id}">Resend Email</button>
                 <button class="btn btn-ghost btn-small retry-sync" data-id="${r.id}">Retry Backup</button>
+                <button class="btn btn-danger-soft btn-small archive-registration" data-id="${r.id}" data-number="${App.escapeHtml(r.transaction_number)}">Archive</button>
               </div>
             `}
           </td>
@@ -147,6 +149,9 @@
       });
       document.querySelectorAll(".retry-sync").forEach(btn => {
         btn.onclick = () => queueSync(btn.dataset.id, btn);
+      });
+      document.querySelectorAll(".archive-registration").forEach(btn => {
+        btn.onclick = () => archiveRegistration(btn.dataset.id, btn.dataset.number, btn);
       });
     }
   }
@@ -185,6 +190,21 @@
     }
   }
 
+  async function archiveRegistration(id, transactionNumber, btn) {
+    const reason = prompt(`Archive ${transactionNumber}?\n\nThis removes it from active lists, preserves it for review, and makes its tickets inactive.\n\nReason:`, "Archived by Admin");
+    if (reason === null) return;
+    if (!confirm(`Confirm archive of ${transactionNumber}?`)) return;
+    App.setBusy(btn, true, "Archiving…");
+    try {
+      const { data, error } = await sb.functions.invoke("archive-transaction", { body:{ registration_id:id, reason } });
+      if (error) throw error;
+      if (!data?.success) throw new Error(data?.message || "Unable to archive transaction.");
+      App.toast(`${transactionNumber} moved to archive.`, "success");
+      await Promise.all([loadRegistrations(), loadTickets(), loadStats(), loadArchives(), loadActivity()]);
+    } catch (err) { App.toast(err.message, "error"); }
+    finally { App.setBusy(btn, false); }
+  }
+
   async function loadTickets() {
     const body = $("ticketBody");
     body.innerHTML = `<tr><td colspan="6" class="empty">Loading…</td></tr>`;
@@ -192,7 +212,8 @@
     try {
       const { data, error } = await sb
         .from("tickets")
-        .select("id,ticket_number,holder_name,status,checked_in_at,checked_in_gate,registration_id,created_at,registrations(transaction_number)")
+        .select("id,ticket_number,holder_name,status,is_free,checked_in_at,checked_in_gate,registration_id,created_at,registrations!inner(transaction_number,archived_at)")
+        .is("registrations.archived_at", null)
         .order("created_at", { ascending: false })
         .limit(800);
 
@@ -218,7 +239,7 @@
 
     $("ticketBody").innerHTML = rows.length ? rows.map(t => `
       <tr>
-        <td><strong>${App.escapeHtml(t.ticket_number)}</strong></td>
+        <td><strong>${App.escapeHtml(t.ticket_number)}</strong>${t.is_free ? `<span class="bundle-badge">FREE</span>` : ""}</td>
         <td>${App.escapeHtml(t.holder_name)}</td>
         <td>${App.escapeHtml(t.registrations?.transaction_number || "—")}</td>
         <td>${App.badge(t.status)}</td>
@@ -308,6 +329,22 @@
         <span>${count}</span>
       </div>
     `).join("") : `<div class="empty-card">No successful check-ins yet.</div>`;
+  }
+
+  async function loadArchives() {
+    const box = $("archiveBody");
+    if (!box) return;
+    if (isViewer) { box.innerHTML = `<tr><td colspan="6" class="empty">Archive review is available to Admin/Event Admin.</td></tr>`; return; }
+    box.innerHTML = `<tr><td colspan="6" class="empty">Loading…</td></tr>`;
+    try {
+      const { data, error } = await sb.from("transaction_archives").select("*").order("archived_at", { ascending:false }).limit(500);
+      if (error) throw error;
+      box.innerHTML = data?.length ? data.map(a => {
+        const r = a.registration_snapshot || {};
+        const ts = Array.isArray(a.tickets_snapshot) ? a.tickets_snapshot : [];
+        return `<tr><td><strong>${App.escapeHtml(a.transaction_number)}</strong></td><td>${App.escapeHtml([r.first_name,r.middle_name,r.last_name].filter(Boolean).join(" "))}<small>${App.escapeHtml(r.email || "")}</small></td><td>${ts.length}</td><td>${App.escapeHtml((r.purchase_source || "finance").toUpperCase())}</td><td>${App.escapeHtml(a.archive_reason || "—")}</td><td>${App.formatDateTime(a.archived_at)}</td></tr>`;
+      }).join("") : `<tr><td colspan="6" class="empty">No archived transactions.</td></tr>`;
+    } catch (err) { panelError(box, err.message, 6); }
   }
 
   async function loadActivity() {
@@ -410,6 +447,7 @@
 
   $("refreshRegistrationsBtn").onclick = loadRegistrations;
   $("refreshTicketsBtn").onclick = loadTickets;
+  if ($("refreshArchiveBtn")) $("refreshArchiveBtn").onclick = loadArchives;
   $("exportBtn").onclick = exportRegistrations;
 
   $("addUserBtn").onclick = () => $("userDialog").showModal();
@@ -446,6 +484,7 @@
     loadRegistrations(),
     loadTickets(),
     loadCheckins(),
+    loadArchives(),
     loadActivity(),
     loadStaff()
   ]);

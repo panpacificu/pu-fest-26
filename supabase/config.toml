@@ -1,0 +1,52 @@
+project_id = "pu-fest-26"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+shadow_port = 54320
+major_version = 15
+
+[realtime]
+enabled = true
+
+[studio]
+enabled = true
+port = 54323
+api_url = "http://127.0.0.1"
+
+[storage]
+enabled = true
+file_size_limit = "50MiB"
+
+[auth]
+enabled = true
+site_url = "http://127.0.0.1:3000"
+additional_redirect_urls = ["https://127.0.0.1:3000"]
+jwt_expiry = 3600
+enable_refresh_token_rotation = true
+refresh_token_reuse_interval = 10
+enable_signup = true
+
+[functions.ticket-view]
+verify_jwt = false
+
+[functions.apps-script-pull]
+verify_jwt = false
+
+[functions.scanner-access]
+verify_jwt = false
+
+[functions.check-in]
+verify_jwt = false
+
+[functions.ticket-lookup]
+verify_jwt = false
+
+[functions.online-order-submit]
+verify_jwt = false

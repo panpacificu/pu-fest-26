@@ -1,6 +1,6 @@
 # PU Fest 2026 Ticketing System
 
-**Version:** 1.4.2
+**Version:** 1.5.0
 **Event:** PU Fest 2026  
 **Date:** October 30, 2026  
 **Time:** 1:00 PM–6:00 PM  
@@ -114,3 +114,10 @@ This build is configured for `vcinzohrrqvowivxkjnp`.
 The application workflow is unchanged. Finance, Google Sheets backup, marketing email delivery, secure QR tickets, and one-time scanning continue to work the same way.
 
 For a fresh installation, follow `NEW_SUPABASE_SETUP.md`.
+
+
+## v1.5.0
+
+Major workflow release adding public online ticket requests with Finance approval, transaction archiving, password-gated accountless scanning, 50-ticket purchases, and the Barkada Bundle (buy 10, get 1 free). Finance-created tickets continue to email automatically through the existing Google Apps Script worker.
+
+See `DEPLOY_v1.5.0.md` for upgrade instructions.

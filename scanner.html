@@ -9,19 +9,34 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/app.css">
 </head>
-<body class="scanner-page">
+<body class="scanner-page scanner-locked">
 <header class="topbar scanner-topbar">
   <a class="brand" href="scanner.html"><span class="brand-mark">PU</span><span><strong>PU Fest 2026</strong><small>Entrance Scanner</small></span></a>
-  <nav><button class="link-btn" id="logoutBtn">Sign out</button></nav>
+  <nav><button class="link-btn" id="lockScannerBtn" type="button">Lock Scanner</button></nav>
 </header>
-<main class="scanner-shell">
+
+<div class="scanner-lock-screen" id="scannerLockScreen">
+  <form class="scanner-lock-card" id="scannerAccessForm">
+    <span class="brand-mark scanner-lock-mark">PU</span>
+    <span class="kicker">ENTRANCE ACCESS</span>
+    <h1>Unlock Scanner</h1>
+    <p>Enter the event scanner password to continue.</p>
+    <label>Password
+      <input id="scannerPassword" type="password" autocomplete="current-password" required autofocus>
+    </label>
+    <button class="btn btn-primary" id="unlockScannerBtn" type="submit">Open Scanner</button>
+    <p class="form-error" id="scannerAccessError" hidden></p>
+  </form>
+</div>
+
+<main class="scanner-shell" id="scannerApp" hidden>
   <section class="scanner-card">
     <div class="scanner-heading">
       <div><span class="kicker">ENTRANCE</span><h1>Scan Ticket</h1><p>Valid tickets are admitted once only.</p></div>
       <label class="gate-label">Gate / Station<input id="gate" value="Main Entrance"></label>
     </div>
     <div id="reader"></div>
-    <p class="scanner-help">Point the camera at the student's PU Fest QR code.</p>
+    <p class="scanner-help">Point the camera at the guest's PU Fest QR code.</p>
     <div class="manual-box">
       <span>QR not scanning? Enter the exact ticket code and verify the holder details before manual check-in.</span>
       <div><input id="manualTicket" placeholder="PUF26-7A3F-9C2D-81B4-E6F1"><button class="btn btn-ghost" id="lookupBtn">Find Ticket</button></div>
@@ -34,6 +49,7 @@
     <h2 id="resultName">PU Fest 2026</h2>
     <p id="resultDetails">Waiting for a ticket.</p>
     <div class="result-ticket" id="resultTicket"></div>
+    <div id="resultBundle"></div>
     <button class="btn btn-primary" id="scanNextBtn" style="display:none">Scan Next</button>
   </section>
 </main>
@@ -52,7 +68,6 @@
 <script src="assets/js/config.js"></script>
 <script src="assets/js/supabase-client.js"></script>
 <script src="assets/js/common.js"></script>
-<script src="assets/js/auth.js"></script>
 <script src="assets/js/scanner.js"></script>
 </body>
 </html>

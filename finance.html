@@ -11,10 +11,7 @@
 </head>
 <body>
 <header class="topbar">
-  <a class="brand" href="finance.html">
-    <span class="brand-mark">PU</span>
-    <span><strong>PU Fest 2026</strong><small>Finance</small></span>
-  </a>
+  <a class="brand" href="finance.html"><span class="brand-mark">PU</span><span><strong>PU Fest 2026</strong><small>Finance</small></span></a>
   <nav>
     <a class="active" href="finance.html">Finance</a>
     <a href="admin.html" id="adminLink">Dashboard</a>
@@ -27,19 +24,55 @@
     <div>
       <span class="kicker">FINANCE</span>
       <h1>Ticket Records</h1>
-      <p>Review ticket records, payment references, receipts, and email delivery.</p>
+      <p>Finance sales send automatically. Online orders require Finance approval first.</p>
     </div>
     <button class="btn btn-primary" id="newTicketBtn">+ New Ticket</button>
   </div>
 
-  <section class="panel finance-list-panel">
+  <button class="online-alert" id="onlineAlert" type="button" hidden>
+    <span class="online-alert-dot"></span>
+    <strong id="onlineAlertCount">0 online requests need review</strong>
+    <span>Review now →</span>
+  </button>
+
+  <section class="panel" id="onlineRequestsPanel">
     <div class="panel-head responsive-head">
       <div>
-        <h2>All Tickets</h2>
-        <p id="ticketCountText">Loading ticket records…</p>
+        <div class="section-title-with-badge"><h2>Online Ticket Requests</h2><span class="count-badge" id="pendingOnlineBadge">0</span></div>
+        <p>Proof of payment must be confirmed before tickets are issued and emailed.</p>
       </div>
       <div class="toolbar finance-toolbar">
+        <input id="onlineSearch" class="search" placeholder="Search name, email, reference">
+        <select id="onlineStatusFilter" class="compact-select">
+          <option value="pending">Pending review</option>
+          <option value="all">All online requests</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+        </select>
+        <button class="btn btn-ghost btn-small" id="refreshOnlineBtn">Refresh</button>
+      </div>
+    </div>
+
+    <div class="table-wrap online-orders-wrap">
+      <table class="finance-ticket-table online-orders-table">
+        <thead><tr>
+          <th>Buyer</th><th>Tickets</th><th>Payment</th><th>Proof</th><th>Status</th><th>Review</th>
+        </tr></thead>
+        <tbody id="onlineBody"><tr><td colspan="6" class="empty">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel finance-list-panel top-gap">
+    <div class="panel-head responsive-head">
+      <div><h2>Issued Tickets</h2><p id="ticketCountText">Loading ticket records…</p></div>
+      <div class="toolbar finance-toolbar">
         <input id="ticketSearch" class="search" placeholder="Search ticket, student, control #">
+        <select id="sourceFilter" class="compact-select">
+          <option value="all">All sources</option>
+          <option value="finance">Finance</option>
+          <option value="online">Online</option>
+        </select>
         <select id="emailFilter" class="compact-select">
           <option value="all">All email statuses</option>
           <option value="pending">Queued / Pending</option>
@@ -53,19 +86,23 @@
 
     <div class="table-wrap finance-ticket-table-wrap">
       <table class="finance-ticket-table">
-        <thead>
-          <tr>
-            <th>Ticket / Student</th>
-            <th>Control / OR #</th>
-            <th>Receipt</th>
-            <th>Ticket Status</th>
-            <th>Email Status</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody id="ticketBody">
-          <tr><td colspan="6" class="empty">Loading…</td></tr>
-        </tbody>
+        <thead><tr>
+          <th>Ticket / Buyer</th><th>Source</th><th>Control / OR #</th><th>Receipt</th><th>Ticket Status</th><th>Email</th><th>Actions</th>
+        </tr></thead>
+        <tbody id="ticketBody"><tr><td colspan="7" class="empty">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel top-gap archive-panel">
+    <div class="panel-head responsive-head">
+      <div><h2>Archived Transactions</h2><p>Removed from active lists, retained here for review.</p></div>
+      <button class="btn btn-ghost btn-small" id="refreshArchiveBtn">Refresh</button>
+    </div>
+    <div class="table-wrap archive-table-wrap">
+      <table>
+        <thead><tr><th>Transaction</th><th>Buyer</th><th>Tickets</th><th>Source</th><th>Reason</th><th>Archived</th></tr></thead>
+        <tbody id="archiveBody"><tr><td colspan="6" class="empty">Loading…</td></tr></tbody>
       </table>
     </div>
   </section>
@@ -74,110 +111,85 @@
 <dialog id="newTicketDialog" class="wide-dialog">
   <form class="dialog-card finance-dialog-card" id="financeForm">
     <button type="button" class="dialog-x" id="closeNewTicketBtn">×</button>
-    <span class="kicker">NEW TICKET</span>
+    <span class="kicker">NEW FINANCE TICKET</span>
     <h2>Record payment</h2>
-    <p class="dialog-sub">The ticket email will be queued automatically after the ticket is created.</p>
+    <p class="dialog-sub">Tickets created here are automatically queued for email delivery.</p>
 
     <div class="form-grid">
       <label>Student Number<input name="student_number" required autocomplete="off"></label>
       <label>Campus<select name="campus" required><option value="">Select</option><option>Urdaneta</option><option>Tayug</option></select></label>
-
       <label>First Name<input name="first_name" required></label>
       <label>Middle Name<input name="middle_name"></label>
       <label>Last Name<input name="last_name" required></label>
       <label>Email<input name="email" type="email" required></label>
-
       <label>Course / Program<input name="course" required></label>
       <label>Year Level<input name="year_level" required placeholder="e.g. 3rd Year"></label>
       <label class="span-2">Section<input name="section" required></label>
 
-      <div class="form-divider span-2"><span>Payment</span></div>
+      <div class="form-divider span-2"><span>Payment & Tickets</span></div>
 
-      <label>Number of Tickets
-        <select name="ticket_quantity" id="ticketQty" required></select>
+      <label>Tickets to Buy
+        <input name="paid_ticket_quantity" id="ticketQty" type="number" min="1" max="50" step="1" value="1" required>
+        <small>Maximum 50 paid tickets per transaction.</small>
       </label>
+      <div class="bundle-summary" id="bundleSummary">
+        <span>Paid <strong id="paidCount">1</strong></span>
+        <span>FREE <strong id="freeCount">0</strong></span>
+        <span>Total <strong id="totalCount">1</strong></span>
+      </div>
       <label>Expected Total<input id="expectedTotal" readonly></label>
       <label>Amount Paid<input name="amount_paid" type="number" min="0" step="0.01" required></label>
       <label>Control / OR Number<input name="or_number" placeholder="Can be updated later"></label>
       <label>Payment Date<input name="payment_date" type="date" required></label>
       <label>Payment Method
-        <select name="payment_method" required>
-          <option value="Cash">Cash</option>
-          <option value="GCash">GCash</option>
-          <option value="Bank Transfer">Bank Transfer</option>
-          <option value="Other">Other</option>
-        </select>
+        <select name="payment_method" required><option value="Cash">Cash</option><option value="GCash">GCash</option><option value="Bank Transfer">Bank Transfer</option><option value="Other">Other</option></select>
       </label>
-
-      <label class="span-2 receipt-upload-label">
-        Receipt Photo <span class="optional-text">(optional)</span>
+      <label class="span-2 receipt-upload-label">Receipt Photo <span class="optional-text">(optional)</span>
         <input name="receipt" id="receiptInput" type="file" accept="image/jpeg,image/png,image/webp">
         <small>JPG, PNG, or WebP • maximum 5 MB</small>
       </label>
 
-      <div id="holderFields" class="span-2"></div>
-
+      <div class="bundle-note span-2"><strong>Barkada Bundle:</strong> Buy 10 tickets and get 1 FREE. Buy 20, get 2 FREE — automatically.</div>
       <label class="span-2">Notes<textarea name="notes" rows="2"></textarea></label>
     </div>
 
-    <div class="form-actions">
-      <button type="button" class="btn btn-ghost" id="cancelNewTicketBtn">Cancel</button>
-      <button class="btn btn-primary" id="issueBtn" type="submit">Create Ticket</button>
-    </div>
+    <div class="form-actions"><button type="button" class="btn btn-ghost" id="cancelNewTicketBtn">Cancel</button><button class="btn btn-primary" id="issueBtn" type="submit">Create Ticket</button></div>
   </form>
 </dialog>
 
 <dialog id="paymentDialog">
   <form class="dialog-card" id="editForm">
     <button type="button" class="dialog-x" id="closePaymentBtn">×</button>
-    <span class="kicker">PAYMENT RECORD</span>
-    <h2>Update payment details</h2>
-    <input type="hidden" name="registration_id">
-    <input type="hidden" name="existing_receipt_path">
-
+    <span class="kicker">PAYMENT RECORD</span><h2>Update payment details</h2>
+    <input type="hidden" name="registration_id"><input type="hidden" name="existing_receipt_path">
     <label>Control / OR Number<input name="or_number"></label>
     <label>Amount Paid<input name="amount_paid" type="number" min="0" step="0.01"></label>
     <label>Payment Date<input name="payment_date" type="date"></label>
     <label>Payment Method<input name="payment_method"></label>
-
-    <label>
-      Replace / Add Receipt Photo
-      <input name="receipt" type="file" accept="image/jpeg,image/png,image/webp">
-      <small>Leave blank to keep the existing receipt.</small>
-    </label>
-
+    <label>Replace / Add Receipt Photo<input name="receipt" type="file" accept="image/jpeg,image/png,image/webp"><small>Leave blank to keep the existing receipt.</small></label>
     <label>Notes<textarea name="notes" rows="2"></textarea></label>
-
-    <div class="form-actions">
-      <button type="button" class="btn btn-ghost" id="cancelPaymentBtn">Cancel</button>
-      <button class="btn btn-primary" id="saveEditBtn" type="submit">Save</button>
-    </div>
+    <div class="form-actions"><button type="button" class="btn btn-ghost" id="cancelPaymentBtn">Cancel</button><button class="btn btn-primary" id="saveEditBtn" type="submit">Save</button></div>
   </form>
 </dialog>
 
-<dialog id="successDialog">
-  <div class="dialog-card">
-    <div class="success-icon">✓</div>
-    <h2>Ticket created</h2>
-    <p id="successMessage"></p>
-    <div id="issuedTickets" class="ticket-list"></div>
-    <button class="btn btn-primary" id="successDoneBtn">Done</button>
+<dialog id="onlineReviewDialog" class="wide-dialog">
+  <div class="dialog-card online-review-card">
+    <button type="button" class="dialog-x" id="closeOnlineReviewBtn">×</button>
+    <span class="kicker">ONLINE PAYMENT REVIEW</span><h2 id="reviewBuyerName">Buyer</h2>
+    <div id="reviewDetails" class="review-details"></div>
+    <img id="reviewProofImage" class="review-proof" alt="Proof of payment">
+    <label>Finance Review Note <span class="optional-text">(optional)</span><textarea id="reviewNote" rows="2" placeholder="Add a note for the review record"></textarea></label>
+    <div class="form-actions review-actions">
+      <button class="btn btn-danger-soft" id="rejectOnlineBtn" type="button">Reject</button>
+      <button class="btn btn-primary" id="approveOnlineBtn" type="button">Confirm Payment & Issue Tickets</button>
+    </div>
   </div>
 </dialog>
 
-<dialog id="receiptDialog" class="receipt-dialog">
-  <div class="dialog-card receipt-view-card">
-    <button type="button" class="dialog-x" id="closeReceiptBtn">×</button>
-    <span class="kicker">PAYMENT RECEIPT</span>
-    <img id="receiptFullImage" alt="Payment receipt">
-  </div>
-</dialog>
+<dialog id="successDialog"><div class="dialog-card"><div class="success-icon">✓</div><h2>Ticket created</h2><p id="successMessage"></p><div id="issuedTickets" class="ticket-list"></div><button class="btn btn-primary" id="successDoneBtn">Done</button></div></dialog>
+<dialog id="receiptDialog" class="receipt-dialog"><div class="dialog-card receipt-view-card"><button type="button" class="dialog-x" id="closeReceiptBtn">×</button><span class="kicker">PAYMENT RECEIPT</span><img id="receiptFullImage" alt="Payment receipt"></div></dialog>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="assets/js/config.js"></script>
-<script src="assets/js/supabase-client.js"></script>
-<script src="assets/js/common.js"></script>
-<script src="assets/js/auth.js"></script>
-<script src="assets/js/finance.js"></script>
+<script src="assets/js/config.js"></script><script src="assets/js/supabase-client.js"></script><script src="assets/js/common.js"></script><script src="assets/js/auth.js"></script><script src="assets/js/finance.js"></script>
 </body>
 </html>

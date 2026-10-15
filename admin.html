@@ -106,6 +106,19 @@
     </div>
   </section>
 
+  <section class="panel top-gap archive-panel">
+    <div class="panel-head responsive-head">
+      <div><h2>Archived Transactions</h2><p>Transactions removed from active lists but retained for review.</p></div>
+      <button class="btn btn-ghost btn-small" id="refreshArchiveBtn">Refresh</button>
+    </div>
+    <div class="table-wrap archive-table-wrap">
+      <table>
+        <thead><tr><th>Transaction</th><th>Buyer</th><th>Tickets</th><th>Source</th><th>Reason</th><th>Archived</th></tr></thead>
+        <tbody id="archiveBody"><tr><td colspan="6" class="empty">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
   <section class="dashboard-grid top-gap">
     <div class="panel">
       <div class="panel-head"><div><h2>Gate Activity</h2><p>Successful admissions by station</p></div></div>
@@ -148,7 +161,6 @@
       <select name="role" required>
         <option value="finance">Finance</option>
         <option value="event_admin">Event Admin</option>
-        <option value="scanner">Scanner / Guard</option>
         <option value="viewer">Viewer</option>
         <option value="admin">Admin</option>
       </select>

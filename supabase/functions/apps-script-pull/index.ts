@@ -21,7 +21,7 @@ function requireBridgeSecret(body: any) {
 async function ticketPayload(admin: any, registration: any, includeQr: boolean) {
   const { data: tickets, error: ticketError } = await admin
     .from("tickets")
-    .select("id,ticket_number,holder_name,status,created_at")
+    .select("id,ticket_number,holder_name,status,is_free,created_at")
     .eq("registration_id", registration.id)
     .order("created_at");
 

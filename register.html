@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>PU Fest 2026 | Online Tickets</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/app.css">
+</head>
+<body class="online-registration-page">
+<header class="public-topbar">
+  <a class="brand" href="register.html"><span class="brand-mark">PU</span><span><strong>PU Fest 2026</strong><small>Online Ticket Registration</small></span></a>
+</header>
+
+<main class="online-registration-shell">
+  <section class="online-registration-hero">
+    <span class="eyebrow">PANPACIFIC UNIVERSITY</span>
+    <h1>Get your PU Fest <span>2026</span> tickets.</h1>
+    <p>Submit your details and proof of payment. Finance will verify your payment before your official QR tickets are emailed.</p>
+    <div class="event-meta online-event-meta">
+      <div><small>DATE</small><strong>October 30, 2026</strong></div>
+      <div><small>TIME</small><strong>1:00 PM – 6:00 PM</strong></div>
+      <div><small>PRICE</small><strong>₱499 / paid ticket</strong></div>
+    </div>
+    <div class="bundle-public-card"><strong>Barkada Bundle</strong><span>Buy 10 tickets, get 1 FREE. Every 10 paid tickets adds another free ticket.</span></div>
+  </section>
+
+  <section class="online-form-card">
+    <form id="onlineOrderForm" class="form-grid">
+      <label class="hp-field" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>
+      <div class="span-2"><span class="kicker">ONLINE ORDER</span><h2>Ticket Request</h2><p class="dialog-sub">Your tickets are issued only after Finance confirms your payment.</p></div>
+
+      <label>First Name<input name="first_name" required></label>
+      <label>Middle Name<input name="middle_name"></label>
+      <label>Last Name<input name="last_name" required></label>
+      <label>Email<input name="email" type="email" required placeholder="Ticket will be sent here"></label>
+      <label>Contact Number<input name="contact_number" required></label>
+      <label>School / Organization <span class="optional-text">(optional)</span><input name="organization"></label>
+
+      <div class="form-divider span-2"><span>Tickets & Payment</span></div>
+
+      <label>Tickets to Buy
+        <input name="paid_ticket_quantity" id="onlineQty" type="number" min="1" max="50" step="1" value="1" required>
+        <small>Maximum 50 paid tickets per transaction.</small>
+      </label>
+      <div class="bundle-summary" id="onlineBundleSummary">
+        <span>Paid <strong id="onlinePaidCount">1</strong></span>
+        <span>FREE <strong id="onlineFreeCount">0</strong></span>
+        <span>Total <strong id="onlineTotalCount">1</strong></span>
+      </div>
+      <label>Amount to Pay<input id="onlineExpectedTotal" readonly></label>
+      <label>Payment Method
+        <select name="payment_method" required><option value="GCash">GCash</option><option value="Bank Transfer">Bank Transfer</option><option value="Other">Other</option></select>
+      </label>
+      <label class="span-2">Payment Reference / Control Number <span class="optional-text">(if available)</span><input name="payment_reference"></label>
+      <label class="span-2">Proof of Payment
+        <input id="onlineProof" name="proof" type="file" accept="image/jpeg,image/png,image/webp" required>
+        <small>JPG, PNG, or WebP • maximum 5 MB</small>
+      </label>
+      <label class="span-2">Notes <span class="optional-text">(optional)</span><textarea name="notes" rows="2"></textarea></label>
+
+      <div class="bundle-note span-2"><strong>Reminder:</strong> The FREE Barkada Bundle ticket is added automatically. You only pay for the number entered under “Tickets to Buy.”</div>
+      <button class="btn btn-primary span-2 online-submit-btn" id="onlineSubmitBtn" type="submit">Submit for Finance Confirmation</button>
+      <p class="form-error span-2" id="onlineOrderError" hidden></p>
+    </form>
+  </section>
+</main>
+
+<dialog id="onlineSuccessDialog">
+  <div class="dialog-card online-success-card">
+    <div class="success-icon">✓</div>
+    <span class="kicker">SUBMITTED</span>
+    <h2>Payment sent for review</h2>
+    <p>Finance will verify your payment first. Your QR tickets will be emailed once approved.</p>
+    <div class="submission-number"><small>REFERENCE NUMBER</small><strong id="onlineSubmissionNumber"></strong></div>
+    <div id="onlineSuccessBundle" class="bundle-note"></div>
+    <button class="btn btn-primary" id="onlineSuccessDoneBtn">Done</button>
+  </div>
+</dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/config.js"></script><script src="assets/js/supabase-client.js"></script><script src="assets/js/common.js"></script><script src="assets/js/register.js"></script>
+</body>
+</html>

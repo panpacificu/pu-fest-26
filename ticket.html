@@ -39,7 +39,7 @@
     if (error) throw error;
     if (!data?.valid) throw new Error(data?.message || "Ticket not found.");
     body.innerHTML = `
-      <div class="public-status">${App.badge(data.status)}</div>
+      <div class="public-status">${App.badge(data.status)} ${data.is_free ? `<span class="bundle-badge">FREE • BARKADA BUNDLE</span>` : ""}</div>
       <div id="ticketQr" class="ticket-qr"></div>
       <h2>${App.escapeHtml(data.holder_name || data.purchaser_name)}</h2>
       <p>${App.escapeHtml([data.course,data.year_level,data.section].filter(Boolean).join(" • "))}</p>

@@ -1,6 +1,6 @@
 /**
  * PU FEST 2026 — GOOGLE SHEETS BACKUP + EMAIL WORKER
- * Version 1.2.1
+ * Version 1.3.0
  *
  * Pull model:
  * Apps Script requests pending jobs FROM Supabase every minute.
@@ -8,7 +8,7 @@
  */
 
 const PU_FEST_CONFIG = Object.freeze({
-  VERSION: '1.2.1',
+  VERSION: '1.3.0',
   SHEET_ID: '1G-stDal6Rpg3CA2TGr9zTa-e0G8_E7ZswpsiID3y-dw',
   EVENT_NAME: 'PU Fest 2026',
   EVENT_DATE: 'October 30, 2026',
@@ -323,6 +323,7 @@ function emailHtml_(r, ticketCards, ticketCount) {
               ${infoRow_('VENUE', 'PanpacificU Events Center')}
               ${infoRow_('TRANSACTION', r.transaction_number || '')}
               ${infoRow_('AMOUNT PAID', 'PHP ' + amount.toLocaleString('en-PH', {minimumFractionDigits:2, maximumFractionDigits:2}))}
+              ${Number(r.free_ticket_quantity || 0) > 0 ? infoRow_('BARKADA BONUS', Number(r.free_ticket_quantity) + ' FREE ticket' + (Number(r.free_ticket_quantity) > 1 ? 's' : '')) : ''}
               ${infoRow_('OR / REF #', r.or_number || 'To be updated by Finance')}
             </table>
 
@@ -353,13 +354,18 @@ function ticketCardHtml_(t, number, total, cid, r) {
   const holder = escapeHtml_(t.holder_name || r.full_name || fullName_(r));
   const details = [r.course, r.year_level, r.section].filter(Boolean).map(escapeHtml_).join(' • ');
 
+  const freeBadge = t.is_free
+    ? '<div style="display:inline-block;margin-top:8px;background:#e8f7ee;color:#147447;border:1px solid #bfe5ce;border-radius:999px;padding:5px 9px;font-family:Arial,sans-serif;font-size:9px;font-weight:800;letter-spacing:.7px;">FREE • BARKADA BUNDLE</div>'
+    : '';
+
   return `
   <table role="presentation" width="100%" cellspacing="0" cellpadding="0"
-    style="width:100%;margin-top:12px;border:1px solid #e4e9ef;border-radius:14px;">
+    style="width:100%;margin-top:12px;border:1px solid ${t.is_free ? '#bfe5ce' : '#e4e9ef'};border-radius:14px;">
     <tr><td align="center" style="padding:21px 18px;">
       <div style="font-family:Arial,sans-serif;font-size:9px;font-weight:800;letter-spacing:1.3px;color:#215FA6;">
         TICKET ${number} OF ${total}
       </div>
+      ${freeBadge}
 
       <img src="cid:${cid}" width="220" alt="PU Fest Ticket QR"
         style="display:block;width:220px;max-width:100%;height:auto;margin:12px auto;border:0;">

@@ -10,7 +10,7 @@ Deno.serve(async (req) => {
     const body = await req.json();
     const p = body.purchaser || {};
     const pay = body.payment || {};
-    const quantity = Number(pay.ticket_quantity);
+    const paidQuantity = Number(pay.paid_ticket_quantity ?? pay.ticket_quantity);
 
     const required = [
       "student_number", "campus", "first_name", "last_name",
@@ -23,22 +23,27 @@ Deno.serve(async (req) => {
       }
     }
 
-    if (!Number.isInteger(quantity) || quantity < 1) throw new Error("Invalid ticket quantity");
+    if (!Number.isInteger(paidQuantity) || paidQuantity < 1 || paidQuantity > 50) {
+      throw new Error("Ticket quantity must be between 1 and 50");
+    }
     if (!Number.isFinite(Number(pay.amount_paid)) || Number(pay.amount_paid) < 0) {
       throw new Error("Invalid amount paid");
     }
 
+    const freeQuantity = Math.floor(paidQuantity / 10);
+    const totalQuantity = paidQuantity + freeQuantity;
     const holders = Array.isArray(body.ticket_holders) ? body.ticket_holders : [];
     const purchaserName = [p.first_name, p.middle_name, p.last_name]
       .filter(Boolean).join(" ").replace(/\s+/g, " ").trim();
 
     const tokens = [];
-    for (let i = 0; i < quantity; i++) {
+    for (let i = 0; i < totalQuantity; i++) {
       const qr_token = randomToken();
       tokens.push({
         qr_token,
         token_hash: await sha256(qr_token),
-        holder_name: String(holders[i] || purchaserName).trim()
+        holder_name: String(holders[i] || purchaserName).trim(),
+        is_free: i >= paidQuantity
       });
     }
 
@@ -48,9 +53,12 @@ Deno.serve(async (req) => {
         p_registration: {
           event_slug: body.event_slug || "pu-fest-2026",
           ...p,
-          ticket_quantity: quantity,
+          purchase_source: "finance",
+          paid_ticket_quantity: paidQuantity,
+          ticket_quantity: totalQuantity,
           amount_paid: Number(pay.amount_paid),
           or_number: pay.or_number || "",
+          receipt_path: pay.receipt_path || "",
           payment_date: pay.payment_date,
           payment_method: pay.payment_method,
           notes: pay.notes || "",
@@ -62,7 +70,7 @@ Deno.serve(async (req) => {
 
     if (createError) throw createError;
 
-    // Google Apps Script will pick this up automatically on its time trigger.
+    // Finance-created tickets keep the original automatic email + Sheet workflow.
     await admin.from("registrations").update({
       sheet_sync_status: "pending",
       sheet_sync_error: null,
@@ -74,6 +82,9 @@ Deno.serve(async (req) => {
       success: true,
       registration_id: created.registration_id,
       transaction_number: created.transaction_number,
+      paid_ticket_quantity: paidQuantity,
+      free_ticket_quantity: freeQuantity,
+      ticket_quantity: totalQuantity,
       tickets: created.tickets,
       sheet_synced: false,
       email_sent: false,
