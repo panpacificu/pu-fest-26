@@ -9,9 +9,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/app.css">
 </head>
-<body>
+<body class="branded-dashboard-page finance-themed-page">
 <header class="topbar">
-  <a class="brand" href="finance.html"><span class="brand-mark">PU</span><span><strong>PU Fest 2026</strong><small>Finance</small></span></a>
+  <a class="brand" href="finance.html"><span class="brand-mark brand-mark-logo"><img src="assets/img/pufest-logo-2026.png" alt="PU Fest 2026"></span><span><strong>PU Fest 2026</strong><small>Finance</small></span></a>
   <nav>
     <a class="active" href="finance.html">Finance</a>
     <a href="admin.html" id="adminLink">Dashboard</a>
@@ -19,11 +19,12 @@
   </nav>
 </header>
 
-<main class="page finance-table-page">
+<main class="page finance-table-page fest-page-shell">
+  <div class="fest-ribbon"><span>PU FEST 2026</span><strong>FINANCE & TICKETING</strong><span>OCT 30 • EVENTS CENTER</span></div>
   <div class="page-heading compact-heading">
     <div>
       <span class="kicker">FINANCE</span>
-      <h1>Ticket Records</h1>
+      <h1>Ticket <span class="fest-accent-text">Records</span></h1>
       <p>Finance sales send automatically. Online orders require Finance approval first.</p>
     </div>
     <button class="btn btn-primary" id="newTicketBtn">+ New Ticket</button>

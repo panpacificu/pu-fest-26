@@ -1,5 +1,28 @@
 # Changelog
 
+## 1.5.2 — Aggressive PU Fest Festival UI
+
+- Stronger event-microsite visual treatment across all frontend pages
+- Added festival ribbons and event-operation headers
+- More dramatic blue/cyan/green gradients and glow effects
+- Improved login landing page and public online-registration experience
+- Added premium ticket-pass styling
+- Upgraded scanner visuals for entrance use
+- Refined Admin and Finance dashboard cards, stats, tables, and status treatments
+- Added subtle motion effects without changing application behavior
+- Frontend only: no SQL, Edge Function, or Apps Script changes
+
+## 1.5.1 — PU Fest Frontend Branding Update
+
+- Updated the frontend visual theme to match the official PU Fest 2026 look
+- Added the provided PU Fest 2026 logo as the main system brand asset
+- Applied the provided event background artwork across the login, public registration, ticket, and scanner views
+- Refreshed topbars, cards, gradients, chips, and buttons to use the PU Fest blue-green palette
+- Added a more event-branded presentation for Admin, Finance, Scanner, and public pages
+- No database changes
+- No Edge Function changes
+- No Apps Script changes
+
 ## 1.5.0 — Online Sales, Archive, Scanner Access & Barkada Bundle
 
 - Scanner no longer requires a staff account

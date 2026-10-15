@@ -492,3 +492,357 @@ dialog::backdrop{background:rgba(5,17,38,.58);backdrop-filter:blur(2px)}
 @media(max-width:620px){.bundle-summary{grid-template-columns:1fr 1fr 1fr}.online-form-card{padding:18px}.online-registration-shell{padding:22px 12px 40px}.public-topbar{padding:16px 12px 0}.online-event-meta{grid-template-columns:1fr}.online-alert{align-items:flex-start}.online-alert span:last-child{display:none}}
 .status-approved{background:#e7f6ef;color:#0b7450}.status-rejected,.status-cancelled{background:#fdecee;color:#a62f3b}
 .hp-field{position:absolute!important;left:-9999px!important;width:1px!important;height:1px!important;overflow:hidden!important}
+
+
+/* v1.5.1 — PU Fest branded frontend */
+:root{
+  --navy:#062f84;
+  --blue:#1082ff;
+  --blue-soft:#ebf5ff;
+  --gold:#8cf6c8;
+  --ink:#10233d;
+  --muted:#63758c;
+  --line:#dfe8f1;
+  --bg:#f4f8fc;
+  --white:#ffffff;
+  --green:#11a56f;
+  --red:#c84452;
+  --orange:#ab6c16;
+  --teal:#27d8c3;
+  --glow:0 0 0 1px rgba(255,255,255,.16),0 18px 45px rgba(4,26,63,.14);
+  --shadow:0 10px 30px rgba(8,34,79,.08);
+}
+
+body{
+  background:
+    radial-gradient(circle at top left, rgba(39,216,195,.08), transparent 28%),
+    radial-gradient(circle at right top, rgba(16,130,255,.08), transparent 30%),
+    var(--bg);
+}
+
+.brand{gap:12px}
+.brand-mark{
+  width:42px;height:42px;border-radius:12px;padding:3px;
+  background:linear-gradient(160deg,rgba(20,129,255,.18),rgba(39,216,195,.18));
+  border:1px solid rgba(17,93,177,.08);
+  box-shadow:0 10px 22px rgba(9,41,94,.08);
+}
+.brand-mark img{width:100%;height:100%;object-fit:contain;display:block}
+.brand strong{font-size:.95rem}
+.brand small{color:#7990ad}
+.topbar{background:rgba(255,255,255,.88);backdrop-filter:blur(14px)}
+.topbar nav a.active{color:var(--navy)}
+.link-btn{font-weight:700}
+.kicker,.eyebrow{color:#1588ff}
+.panel{
+  background:rgba(255,255,255,.92);
+  border:1px solid rgba(201,218,235,.82);
+  box-shadow:var(--shadow);
+}
+.btn-primary{
+  background:linear-gradient(135deg,#0b62ff,#1ad6c3);
+  box-shadow:0 8px 18px rgba(17,130,240,.2);
+}
+.btn-primary:hover{background:linear-gradient(135deg,#0956df,#14c2b1)}
+.btn-ghost{background:#eff6fd;color:#25415e}
+.event-chip{
+  background:linear-gradient(135deg,#072f7a,#14c9c4);
+  box-shadow:0 10px 24px rgba(8,43,101,.14);
+}
+.stat{
+  background:linear-gradient(180deg,#ffffff,#f8fbff);
+  border-color:#e0eaf4;
+}
+input:focus,select:focus,textarea:focus{border-color:#5fb6ff;box-shadow:0 0 0 3px rgba(16,130,255,.13)}
+.status-unused,.status-pending{background:#e7f4ff;color:#1365bb}
+.status-sent,.status-success{background:#e8fbf4;color:#0b8f62}
+.role{background:#e9f5ff;color:#0e6ad0}
+.table-wrap table tbody tr:hover td{background:rgba(14,126,230,.02)}
+.online-alert{background:linear-gradient(90deg,#fffbee,#f7fffc);border-color:#d6ecb2}
+.count-badge{background:linear-gradient(135deg,#0b62ff,#17d5c0)}
+.bundle-note,.bundle-public-card{box-shadow:inset 0 1px 0 rgba(255,255,255,.8)}
+
+.fest-login-page{
+  background:
+    linear-gradient(120deg, rgba(2,24,75,.9), rgba(8,80,144,.66)),
+    url('../img/pufest-bg-stage-symmetry.png') center/cover no-repeat fixed;
+}
+.fest-login-page::before{
+  content:'';position:fixed;inset:0;pointer-events:none;
+  background:radial-gradient(circle at 20% 15%, rgba(76,255,223,.18), transparent 22%),
+             radial-gradient(circle at 78% 20%, rgba(24,159,255,.15), transparent 20%);
+}
+.hero-logo{width:min(220px,42vw);display:block;margin:0 0 12px;filter:drop-shadow(0 18px 38px rgba(0,0,0,.28))}
+.login-brand h1{max-width:680px;font-size:clamp(3rem,7.3vw,5.4rem);line-height:.93}
+.login-brand h1 span{display:block;color:#a8ffdc}
+.login-brand>p{color:#d7ebff}
+.event-meta{background:rgba(255,255,255,.07);backdrop-filter:blur(10px);padding:18px 20px;border-radius:18px;border:1px solid rgba(255,255,255,.12);width:max-content;max-width:100%}
+.login-card{background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.35)}
+.online-public-link{background:rgba(239,246,253,.9)}
+
+.branded-dashboard-page .page-heading,
+.finance-themed-page .page-heading{
+  padding:24px;border-radius:22px;position:relative;overflow:hidden;
+  background:linear-gradient(120deg, rgba(6,47,132,.94), rgba(17,163,148,.8)), url('../img/pufest-bg-stage-wide.png') center/cover no-repeat;
+  color:#fff;box-shadow:var(--glow);
+}
+.branded-dashboard-page .page-heading::before,
+.finance-themed-page .page-heading::before{
+  content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,0));pointer-events:none
+}
+.branded-dashboard-page .page-heading > *,
+.finance-themed-page .page-heading > *{position:relative;z-index:1}
+.branded-dashboard-page .page-heading p,
+.finance-themed-page .page-heading p{color:rgba(255,255,255,.82)}
+.branded-dashboard-page .page-heading .kicker,
+.finance-themed-page .page-heading .kicker{color:#c5fff1}
+.branded-dashboard-page .heading-actions .btn-ghost,
+.finance-themed-page .heading-actions .btn-ghost{background:rgba(255,255,255,.14);color:#fff}
+
+.branded-scanner-page{background:
+  linear-gradient(145deg, rgba(5,17,56,.94), rgba(7,60,94,.86)),
+  url('../img/pufest-bg-stage-wide.png') center/cover no-repeat fixed}
+.scanner-topbar{background:rgba(7,20,54,.72)!important;backdrop-filter:blur(12px)}
+.scanner-card{background:rgba(255,255,255,.95);backdrop-filter:blur(8px);box-shadow:var(--glow)}
+.scan-result{box-shadow:var(--glow)}
+.scanner-lock-screen{background:
+  linear-gradient(150deg, rgba(3,16,49,.95), rgba(13,77,107,.75)),
+  url('../img/pufest-bg-stage-symmetry.png') center/cover no-repeat fixed}
+.scanner-lock-card{background:rgba(255,255,255,.94);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.4)}
+.scanner-lock-mark{margin-bottom:10px;width:120px;height:auto;background:none;border:0;box-shadow:none;padding:0}
+.scanner-lock-mark img{width:100%;height:auto}
+
+.branded-public-page{
+  background:
+    linear-gradient(140deg, rgba(244,248,252,.93), rgba(241,249,255,.96)),
+    url('../img/pufest-bg-stage-symmetry.png') center top/cover no-repeat fixed;
+}
+.public-topbar{padding-top:26px}
+.online-registration-shell{align-items:start}
+.online-registration-hero{
+  color:white;border-radius:26px;padding:34px 28px;position:relative;overflow:hidden;
+  background:linear-gradient(145deg, rgba(6,47,132,.9), rgba(16,170,156,.78)), url('../img/pufest-bg-stage-wide.png') center/cover no-repeat;
+  box-shadow:var(--glow)
+}
+.online-registration-hero::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.05),transparent 40%);pointer-events:none}
+.online-registration-hero > *{position:relative;z-index:1}
+.hero-logo-public{width:min(180px,36vw);margin-bottom:8px;filter:drop-shadow(0 18px 32px rgba(0,0,0,.24))}
+.online-registration-hero h1{color:#fff;max-width:610px}
+.online-registration-hero h1 span{color:#b8ffe8}
+.online-registration-hero>p{color:rgba(255,255,255,.82)}
+.online-event-meta .event-meta{margin-top:0;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12)}
+.online-form-card{background:rgba(255,255,255,.94);backdrop-filter:blur(14px)}
+
+.branded-ticket-page{
+  background:
+    linear-gradient(135deg, rgba(4,16,56,.94), rgba(8,66,117,.85)),
+    url('../img/pufest-bg-stage-symmetry.png') center/cover no-repeat fixed;
+}
+.public-ticket{background:rgba(255,255,255,.95);backdrop-filter:blur(10px)}
+.ticket-hero{
+  position:relative;overflow:hidden;
+  background:linear-gradient(135deg, rgba(6,47,132,.96), rgba(14,194,181,.82)), url('../img/pufest-bg-stage-wide.png') center/cover no-repeat;
+}
+.ticket-hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,0));pointer-events:none}
+.ticket-hero > *{position:relative;z-index:1}
+.ticket-hero-logo{display:block;width:120px;max-width:32vw;margin:0 auto 10px;filter:drop-shadow(0 16px 32px rgba(0,0,0,.26))}
+.ticket-hero .eyebrow{color:#d2fff4}
+.ticket-hero h1 span{color:#b8ffe8}
+.ticket-number{background:linear-gradient(180deg,#f8fbff,#f1f8ff)}
+.public-ticket footer{background:#fafcff}
+
+@media(max-width:900px){
+  .branded-dashboard-page .page-heading,
+  .finance-themed-page .page-heading{padding:18px}
+  .hero-logo{margin-inline:auto}
+}
+@media(max-width:680px){
+  .hero-logo{width:min(170px,46vw)}
+  .brand-mark{width:38px;height:38px}
+  .event-meta{width:100%;padding:14px}
+  .online-registration-hero{padding:24px 18px;border-radius:20px}
+}
+
+
+/* v1.5.2 — Aggressive PU Fest Festival UI */
+:root{
+  --fest-blue:#0a67ff;
+  --fest-cyan:#31e5ff;
+  --fest-teal:#1ce0b8;
+  --fest-green:#30ef8f;
+  --fest-deep:#031840;
+  --fest-deep-2:#071f52;
+  --fest-glow-blue:0 0 28px rgba(31,153,255,.22);
+  --fest-glow-green:0 0 28px rgba(28,224,184,.18);
+}
+
+@keyframes festFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes festPulse{0%,100%{box-shadow:0 0 0 0 rgba(28,224,184,.0)}50%{box-shadow:0 0 0 6px rgba(28,224,184,.08)}}
+@keyframes festSweep{0%{transform:translateX(-130%) skewX(-18deg)}100%{transform:translateX(240%) skewX(-18deg)}}
+@keyframes festGlow{0%,100%{filter:drop-shadow(0 12px 26px rgba(0,0,0,.24))}50%{filter:drop-shadow(0 12px 36px rgba(49,229,255,.26))}}
+
+body:before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:-1;
+  background-image:linear-gradient(rgba(10,103,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(10,103,255,.018) 1px,transparent 1px);
+  background-size:32px 32px;
+  mask-image:linear-gradient(to bottom,rgba(0,0,0,.35),transparent 55%);
+}
+
+.fest-page-shell{position:relative}
+.fest-ribbon{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  margin:0 0 14px;padding:9px 14px;border-radius:12px;
+  background:linear-gradient(90deg,rgba(5,34,91,.98),rgba(6,103,168,.95),rgba(18,180,151,.94));
+  color:#fff;border:1px solid rgba(255,255,255,.12);box-shadow:0 10px 28px rgba(4,30,75,.16);
+  font-size:.62rem;letter-spacing:.13em;text-transform:uppercase;font-weight:700;
+}
+.fest-ribbon strong{font-size:.67rem;letter-spacing:.18em;color:#c9fff1}
+.fest-accent-text{
+  background:linear-gradient(90deg,#fff,#b6fff0,#9be7ff);-webkit-background-clip:text;background-clip:text;color:transparent
+}
+
+.branded-dashboard-page .page-heading,
+.finance-themed-page .page-heading{
+  min-height:170px;align-items:flex-end;
+  background:
+    linear-gradient(120deg,rgba(3,24,64,.90),rgba(3,58,111,.64) 44%,rgba(7,123,118,.52)),
+    url('../img/pufest-bg-stage-wide.png') center 56%/cover no-repeat;
+  border:1px solid rgba(93,217,255,.24);
+  box-shadow:0 26px 60px rgba(5,30,77,.16),inset 0 0 60px rgba(20,210,198,.07);
+}
+.branded-dashboard-page .page-heading:after,
+.finance-themed-page .page-heading:after{
+  content:'';position:absolute;left:0;right:0;bottom:0;height:2px;
+  background:linear-gradient(90deg,transparent,#25dfff,#24efad,#25dfff,transparent);
+  box-shadow:0 0 18px rgba(37,223,255,.75)
+}
+.branded-dashboard-page .page-heading h1,
+.finance-themed-page .page-heading h1{font-size:clamp(2.2rem,4vw,3.7rem);line-height:.95;margin-top:7px;text-shadow:0 10px 28px rgba(0,0,0,.2)}
+
+.panel{
+  border-color:rgba(186,210,233,.72);
+  box-shadow:0 12px 35px rgba(5,36,80,.07),inset 0 1px 0 rgba(255,255,255,.8);
+}
+.panel-head h2{font-size:1.05rem;color:#0d2b55}
+.panel-head:has(h2)::after{content:'';display:none}
+
+.stats{gap:12px}
+.stat{position:relative;overflow:hidden;padding:16px;background:linear-gradient(155deg,#fff 0%,#f4faff 74%,#f1fffb 100%)}
+.stat:before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(#0a67ff,#20ddbb)}
+.stat span{text-transform:uppercase;font-size:.59rem;letter-spacing:.08em;font-weight:800;color:#74879d}
+.stat strong{color:#092f66;font-size:1.55rem}
+
+.btn{letter-spacing:.01em}
+.btn-primary{position:relative;overflow:hidden;background:linear-gradient(115deg,#0758f5,#1286ff 45%,#18d8bd);border:1px solid rgba(255,255,255,.18);box-shadow:0 10px 24px rgba(7,98,224,.22)}
+.btn-primary:before{content:'';position:absolute;inset:-20% auto -20% -35%;width:28%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-18deg)}
+.btn-primary:hover:before{animation:festSweep .65s ease}
+.btn-ghost{border:1px solid #dbe8f4;background:linear-gradient(180deg,#f9fcff,#eef6fd)}
+
+.table-wrap{border:1px solid #e4edf6;background:white}
+th{background:linear-gradient(180deg,#f8fbff,#f3f8fd);color:#617893;border-bottom-color:#dce8f3}
+tbody tr{transition:.15s}
+tbody tr:hover td{background:#f7fbff!important}
+.status{border:1px solid rgba(0,0,0,.03)}
+.status-sent,.status-success{box-shadow:inset 0 0 0 1px rgba(11,143,98,.08)}
+.status-unused,.status-pending{box-shadow:inset 0 0 0 1px rgba(19,101,187,.07)}
+.bundle-badge{box-shadow:0 4px 12px rgba(20,116,71,.08)}
+
+/* Login becomes a true event landing screen */
+.fest-login-page{
+  background:
+    linear-gradient(100deg,rgba(2,17,55,.96) 0%,rgba(4,44,95,.82) 42%,rgba(3,71,84,.70) 100%),
+    url('../img/pufest-bg-stage-wide.png') center/cover no-repeat fixed;
+}
+.login-shell{width:min(1080px,100%);grid-template-columns:minmax(0,1.25fr) 390px;gap:64px}
+.hero-logo{width:min(260px,45vw);animation:festGlow 5s ease-in-out infinite}
+.login-brand h1{font-size:clamp(3.4rem,7vw,6rem);max-width:720px}
+.login-brand h1 span{background:linear-gradient(90deg,#aaffdf,#75e9ff,#d8fff5);-webkit-background-clip:text;background-clip:text;color:transparent}
+.login-brand>p{font-size:1.02rem;max-width:560px;color:#e6f4ff}
+.event-meta{border:1px solid rgba(116,234,255,.2);background:linear-gradient(135deg,rgba(6,55,113,.42),rgba(16,131,118,.28));box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
+.event-meta small{color:#8ddff0}.event-meta strong{font-size:.78rem;color:#fff}
+.fest-login-card{position:relative;overflow:hidden;border:1px solid rgba(128,226,255,.22);box-shadow:0 35px 90px rgba(0,0,0,.32),0 0 50px rgba(40,220,199,.08)}
+.fest-login-card:before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 85% 0%,rgba(38,224,198,.14),transparent 28%);pointer-events:none}
+.login-card-glow{position:absolute;width:140px;height:140px;border-radius:50%;background:rgba(38,224,198,.16);filter:blur(45px);right:-45px;top:-45px;pointer-events:none}
+.fest-kicker{color:#097aff}
+.fest-public-cta{justify-content:space-between;padding-inline:16px}
+.fest-public-cta span{font-size:1rem;color:#0a74ef}
+
+/* Online registration */
+.branded-public-page{
+  background:
+    linear-gradient(180deg,rgba(242,248,255,.96),rgba(247,251,255,.97)),
+    url('../img/pufest-bg-stage-symmetry.png') center/cover no-repeat fixed;
+}
+.online-registration-shell{grid-template-columns:minmax(0,.95fr) minmax(520px,1.05fr);gap:24px}
+.online-registration-hero{min-height:650px;display:flex;flex-direction:column;justify-content:flex-end;
+  background:
+    linear-gradient(180deg,rgba(4,24,65,.18),rgba(4,36,84,.62) 48%,rgba(6,72,88,.88)),
+    url('../img/pufest-bg-stage-symmetry.png') center/cover no-repeat;
+  border:1px solid rgba(93,225,255,.32);box-shadow:0 28px 70px rgba(6,38,91,.18)
+}
+.hero-logo-public{position:absolute;top:28px;left:28px;width:min(190px,36vw);animation:festFloat 5s ease-in-out infinite}
+.online-registration-hero h1{font-size:clamp(3rem,5.5vw,5.6rem);line-height:.9;margin-bottom:16px}
+.online-registration-hero h1 span{background:linear-gradient(90deg,#adffe3,#6ee7ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.fest-bundle-card{background:linear-gradient(135deg,rgba(232,255,245,.96),rgba(233,250,255,.96));border-color:#aee7d0;box-shadow:0 14px 28px rgba(9,73,76,.08)}
+.fest-online-form-card{position:relative;overflow:hidden;border:1px solid rgba(150,198,231,.55);box-shadow:0 26px 60px rgba(6,45,94,.10)}
+.fest-online-form-card:after{content:'';position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,#126cff,#31e5ff,#22e3ac,#126cff)}
+.fest-form-header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:-4px 0 18px;padding-bottom:14px;border-bottom:1px solid #e7eef5}
+.fest-form-header span{font-size:.6rem;letter-spacing:.14em;font-weight:900;color:#1082ff}
+.fest-form-header strong{font-size:.82rem;color:#0e315e}
+.bundle-summary span{background:linear-gradient(180deg,#fbfdff,#f2f8ff)}
+.bundle-summary.has-free span:nth-child(2){box-shadow:0 8px 18px rgba(20,116,71,.08)}
+
+/* Scanner becomes event-gate UI */
+.branded-scanner-page{background:
+  linear-gradient(135deg,rgba(2,17,54,.95),rgba(4,56,96,.86),rgba(5,94,83,.76)),
+  url('../img/pufest-bg-stage-wide.png') center/cover no-repeat fixed}
+.fest-scanner-shell{max-width:1180px;gap:18px}
+.fest-scanner-card{border:1px solid rgba(100,220,255,.28);box-shadow:0 28px 70px rgba(0,0,0,.22)}
+#reader{border:1px solid rgba(50,219,255,.34);box-shadow:inset 0 0 40px rgba(26,184,255,.05),0 0 32px rgba(31,153,255,.08)}
+.fest-scan-result{position:relative;overflow:hidden;border:1px solid rgba(120,225,255,.18)}
+.fest-scan-result:before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(73,235,255,.15),transparent 36%);pointer-events:none}
+.scan-result.success{background:linear-gradient(145deg,#05664d,#0aa67b)}
+.scan-result.used{background:linear-gradient(145deg,#7d470a,#c47710)}
+.scan-result.invalid,.scan-result.void{background:linear-gradient(145deg,#7f2332,#ba3c4f)}
+.result-symbol{box-shadow:0 0 0 10px rgba(255,255,255,.03),0 0 35px rgba(255,255,255,.08);animation:festPulse 2.8s ease-in-out infinite}
+.scan-result h2{font-size:2.3rem}
+
+/* Ticket becomes a collectible event pass */
+.branded-ticket-page{
+  background:
+    linear-gradient(135deg,rgba(2,15,50,.95),rgba(6,56,101,.84),rgba(5,96,88,.78)),
+    url('../img/pufest-bg-stage-wide.png') center/cover no-repeat fixed;
+}
+.fest-public-ticket{border:1px solid rgba(107,223,255,.24);box-shadow:0 38px 100px rgba(0,0,0,.4),0 0 50px rgba(23,218,191,.09)}
+.ticket-hero{padding:28px 25px 24px;background:
+  linear-gradient(150deg,rgba(3,27,78,.96),rgba(4,92,128,.82),rgba(10,153,123,.70)),
+  url('../img/pufest-bg-stage-wide.png') center/cover no-repeat}
+.ticket-hero-logo{width:145px;animation:festGlow 5s ease-in-out infinite}
+.ticket-hero h1{font-size:3.1rem}.ticket-hero p{font-size:.66rem;letter-spacing:.14em;font-weight:800;color:#d8fff5}
+.ticket-body{background:linear-gradient(180deg,#fff,#fbfdff)}
+.ticket-qr{padding:13px;width:max-content;min-width:230px;background:white;border-radius:18px;border:1px solid #dbe8f2;box-shadow:0 14px 32px rgba(7,42,88,.10)}
+.ticket-number{border:1px solid #dfeaf4;box-shadow:inset 0 1px 0 white}
+
+/* Dialogs */
+dialog::backdrop{background:rgba(1,15,43,.72);backdrop-filter:blur(6px)}
+.dialog-card{border:1px solid rgba(158,201,235,.65);box-shadow:0 30px 90px rgba(3,25,67,.34)}
+
+/* More prominent online review */
+.online-alert{position:relative;overflow:hidden;background:linear-gradient(90deg,#fff8df,#effff9);box-shadow:0 10px 25px rgba(116,91,15,.08)}
+.online-alert:after{content:'';position:absolute;left:0;right:0;bottom:0;height:2px;background:linear-gradient(90deg,#f1bd2b,#29d8a9)}
+.online-alert-dot{animation:festPulse 2s ease-in-out infinite}
+.pending-review-row td:first-child{box-shadow:inset 3px 0 0 #e9ae13}
+
+@media(max-width:980px){
+  .login-shell{grid-template-columns:1fr;max-width:680px;gap:28px}
+  .online-registration-shell{grid-template-columns:1fr}
+  .online-registration-hero{min-height:560px}
+}
+@media(max-width:680px){
+  .fest-ribbon{display:none}
+  .branded-dashboard-page .page-heading,.finance-themed-page .page-heading{min-height:145px}
+  .online-registration-hero{min-height:500px}
+  .hero-logo-public{position:relative;top:auto;left:auto;margin-bottom:auto}
+  .fest-form-header{align-items:flex-start;flex-direction:column;gap:4px}
+  .ticket-hero h1{font-size:2.6rem}
+}

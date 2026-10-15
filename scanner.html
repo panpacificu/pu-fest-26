@@ -9,15 +9,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/app.css">
 </head>
-<body class="scanner-page scanner-locked">
+<body class="scanner-page scanner-locked branded-scanner-page">
 <header class="topbar scanner-topbar">
-  <a class="brand" href="scanner.html"><span class="brand-mark">PU</span><span><strong>PU Fest 2026</strong><small>Entrance Scanner</small></span></a>
+  <a class="brand" href="scanner.html"><span class="brand-mark brand-mark-logo"><img src="assets/img/pufest-logo-2026.png" alt="PU Fest 2026"></span><span><strong>PU Fest 2026</strong><small>Entrance Scanner</small></span></a>
   <nav><button class="link-btn" id="lockScannerBtn" type="button">Lock Scanner</button></nav>
 </header>
 
 <div class="scanner-lock-screen" id="scannerLockScreen">
   <form class="scanner-lock-card" id="scannerAccessForm">
-    <span class="brand-mark scanner-lock-mark">PU</span>
+    <span class="brand-mark brand-mark-logo scanner-lock-mark"><img src="assets/img/pufest-logo-2026.png" alt="PU Fest 2026"></span>
     <span class="kicker">ENTRANCE ACCESS</span>
     <h1>Unlock Scanner</h1>
     <p>Enter the event scanner password to continue.</p>
@@ -29,8 +29,8 @@
   </form>
 </div>
 
-<main class="scanner-shell" id="scannerApp" hidden>
-  <section class="scanner-card">
+<main class="scanner-shell fest-scanner-shell" id="scannerApp" hidden>
+  <section class="scanner-card fest-scanner-card">
     <div class="scanner-heading">
       <div><span class="kicker">ENTRANCE</span><h1>Scan Ticket</h1><p>Valid tickets are admitted once only.</p></div>
       <label class="gate-label">Gate / Station<input id="gate" value="Main Entrance"></label>
@@ -43,7 +43,7 @@
     </div>
   </section>
 
-  <section class="scan-result idle" id="resultCard">
+  <section class="scan-result idle fest-scan-result" id="resultCard">
     <div class="result-symbol" id="resultSymbol">⌁</div>
     <span class="result-label" id="resultLabel">READY TO SCAN</span>
     <h2 id="resultName">PU Fest 2026</h2>
