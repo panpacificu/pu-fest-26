@@ -846,3 +846,98 @@ dialog::backdrop{background:rgba(1,15,43,.72);backdrop-filter:blur(6px)}
   .fest-form-header{align-items:flex-start;flex-direction:column;gap:4px}
   .ticket-hero h1{font-size:2.6rem}
 }
+
+
+/* v1.5.3 — UI fixes */
+
+/* Archive stays out of the working dashboard until requested. */
+.archive-panel[hidden]{display:none!important}
+#toggleArchiveBtn{
+  white-space:nowrap;
+  background:rgba(255,255,255,.13);
+  border-color:rgba(255,255,255,.2);
+  color:#fff;
+}
+.finance-themed-page #toggleArchiveBtn,
+.branded-dashboard-page #toggleArchiveBtn{
+  background:rgba(255,255,255,.13);
+  color:#fff;
+  border-color:rgba(255,255,255,.22);
+}
+.archive-panel{
+  scroll-margin-top:84px;
+}
+
+/* Registration hero: keep logo fully separate from headline. */
+.online-registration-hero{
+  justify-content:flex-start!important;
+  gap:0;
+}
+.hero-logo-public{
+  position:relative!important;
+  top:auto!important;
+  left:auto!important;
+  width:min(150px,32vw)!important;
+  margin:0 0 18px 0!important;
+  flex:0 0 auto;
+}
+.online-registration-hero .eyebrow{
+  margin-bottom:8px;
+}
+.online-registration-hero h1{
+  margin-top:0!important;
+}
+.online-registration-hero .online-event-meta{
+  margin-top:auto!important;
+}
+.public-topbar .brand-mark-logo{
+  width:46px;
+  height:46px;
+  background:transparent;
+  border:0;
+  box-shadow:none;
+  padding:0;
+}
+
+/* Scanner unlock card: explicit contrast, independent of dark scanner page. */
+.scanner-lock-card{
+  color:#10233d!important;
+}
+.scanner-lock-card h1{
+  color:#10233d!important;
+  text-shadow:none!important;
+  font-weight:800;
+}
+.scanner-lock-card p{
+  color:#61748c!important;
+}
+.scanner-lock-card label{
+  color:#334760!important;
+}
+.scanner-lock-card .kicker{
+  color:#087cff!important;
+}
+.scanner-lock-card input{
+  color:#10233d!important;
+  background:#fff!important;
+  border-color:#cdd9e5!important;
+}
+.scanner-lock-card input::placeholder{
+  color:#91a0b1!important;
+}
+.scanner-lock-card .form-error{
+  color:#a92e3a!important;
+}
+
+@media(max-width:680px){
+  .hero-logo-public{
+    width:min(132px,38vw)!important;
+    margin-bottom:14px!important;
+  }
+  .online-registration-hero .online-event-meta{
+    margin-top:26px!important;
+  }
+  #toggleArchiveBtn{
+    width:auto!important;
+  }
+}

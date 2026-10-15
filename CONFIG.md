@@ -1,9 +1,15 @@
-# PU Fest 2026 Ticketing System — v1.5.2
+# PU Fest 2026 Ticketing System — v1.5.3
 
-Frontend-only visual update.
+Frontend-only UI fix.
 
-No SQL migration required.
-No Supabase Edge Function redeployment required.
-No Apps Script changes required.
+Changes:
+- Archive hidden by default with a Show Archive toggle
+- Registration logo positioning fixed
+- Scanner unlock screen text contrast fixed
 
-Upload the updated frontend files/assets to GitHub Pages.
+Deployment:
+Replace the frontend files on GitHub Pages.
+
+No SQL migration.
+No Supabase Edge Function redeploy.
+No Apps Script update.

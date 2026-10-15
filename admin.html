@@ -32,6 +32,7 @@
       <p>Registrations, tickets, attendance, email, backup, and staff operations.</p>
     </div>
     <div class="heading-actions">
+      <button class="btn btn-ghost" id="toggleArchiveBtn" type="button">Show Archive</button>
       <button class="btn btn-ghost" id="exportBtn">Export CSV</button>
       <button class="btn btn-primary" id="addUserBtn">Add Staff</button>
     </div>
@@ -107,7 +108,7 @@
     </div>
   </section>
 
-  <section class="panel top-gap archive-panel">
+  <section class="panel top-gap archive-panel" id="archivePanel" hidden>
     <div class="panel-head responsive-head">
       <div><h2>Archived Transactions</h2><p>Transactions removed from active lists but retained for review.</p></div>
       <button class="btn btn-ghost btn-small" id="refreshArchiveBtn">Refresh</button>

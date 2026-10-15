@@ -420,6 +420,21 @@
   $("refreshOnlineBtn").onclick = () => loadOnlineOrders();
   $("refreshArchiveBtn").onclick = () => loadArchives();
 
-  await Promise.all([loadOnlineOrders(), loadTickets(), loadArchives()]);
+  let archiveLoaded = false;
+  $("toggleArchiveBtn").onclick = async () => {
+    const panel = $("archivePanel");
+    const opening = panel.hidden;
+    panel.hidden = !opening;
+    $("toggleArchiveBtn").textContent = opening ? "Hide Archive" : "Show Archive";
+
+    if (opening && !archiveLoaded) {
+      archiveLoaded = true;
+      await loadArchives();
+    }
+
+    if (opening) panel.scrollIntoView({ behavior:"smooth", block:"start" });
+  };
+
+  await Promise.all([loadOnlineOrders(), loadTickets()]);
   setInterval(() => loadOnlineOrders(), 30000);
 })();

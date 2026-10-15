@@ -448,6 +448,23 @@
   $("refreshRegistrationsBtn").onclick = loadRegistrations;
   $("refreshTicketsBtn").onclick = loadTickets;
   if ($("refreshArchiveBtn")) $("refreshArchiveBtn").onclick = loadArchives;
+
+  let archiveLoaded = false;
+  if ($("toggleArchiveBtn") && $("archivePanel")) {
+    $("toggleArchiveBtn").onclick = async () => {
+      const panel = $("archivePanel");
+      const opening = panel.hidden;
+      panel.hidden = !opening;
+      $("toggleArchiveBtn").textContent = opening ? "Hide Archive" : "Show Archive";
+
+      if (opening && !archiveLoaded) {
+        archiveLoaded = true;
+        await loadArchives();
+      }
+
+      if (opening) panel.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+  }
   $("exportBtn").onclick = exportRegistrations;
 
   $("addUserBtn").onclick = () => $("userDialog").showModal();
@@ -484,7 +501,6 @@
     loadRegistrations(),
     loadTickets(),
     loadCheckins(),
-    loadArchives(),
     loadActivity(),
     loadStaff()
   ]);

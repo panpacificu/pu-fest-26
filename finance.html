@@ -27,7 +27,10 @@
       <h1>Ticket <span class="fest-accent-text">Records</span></h1>
       <p>Finance sales send automatically. Online orders require Finance approval first.</p>
     </div>
-    <button class="btn btn-primary" id="newTicketBtn">+ New Ticket</button>
+    <div class="heading-actions">
+      <button class="btn btn-ghost" id="toggleArchiveBtn" type="button">Show Archive</button>
+      <button class="btn btn-primary" id="newTicketBtn">+ New Ticket</button>
+    </div>
   </div>
 
   <button class="online-alert" id="onlineAlert" type="button" hidden>
@@ -95,7 +98,7 @@
     </div>
   </section>
 
-  <section class="panel top-gap archive-panel">
+  <section class="panel top-gap archive-panel" id="archivePanel" hidden>
     <div class="panel-head responsive-head">
       <div><h2>Archived Transactions</h2><p>Removed from active lists, retained here for review.</p></div>
       <button class="btn btn-ghost btn-small" id="refreshArchiveBtn">Refresh</button>

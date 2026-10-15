@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.5.3 — Dashboard / Registration / Scanner Fixes
+
+- Archived Transactions are hidden by default on Admin and Finance
+- Added Show Archive / Hide Archive toggle
+- Archive data loads only when opened
+- Fixed Online Registration PU Fest logo overlap with headline
+- Added PU Fest logo to public registration topbar
+- Fixed Scanner unlock screen text contrast and readability
+- Frontend-only update
+- No SQL changes
+- No Supabase function redeploy
+- No Apps Script changes
+
 ## 1.5.2 — Aggressive PU Fest Festival UI
 
 - Stronger event-microsite visual treatment across all frontend pages
