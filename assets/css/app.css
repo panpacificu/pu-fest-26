@@ -941,3 +941,171 @@ dialog::backdrop{background:rgba(1,15,43,.72);backdrop-filter:blur(6px)}
     width:auto!important;
   }
 }
+
+
+/* v1.5.4 — Online registration payment accounts */
+.payment-accounts{
+  margin-top:4px;
+  padding:18px;
+  border:1px solid #d7e7f2;
+  border-radius:16px;
+  background:
+    radial-gradient(circle at top right,rgba(36,218,195,.08),transparent 35%),
+    linear-gradient(180deg,#f9fcff,#f4f9fd);
+}
+.payment-accounts-head h3{
+  margin:4px 0 4px;
+  font-size:1rem;
+  color:var(--ink);
+}
+.payment-accounts-head p{
+  margin:0 0 14px;
+  color:var(--muted);
+  font-size:.72rem;
+  line-height:1.5;
+}
+.payment-campus-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+.payment-campus-card{
+  border:1px solid #dce8f2;
+  border-radius:14px;
+  overflow:hidden;
+  background:rgba(255,255,255,.93);
+  box-shadow:0 8px 22px rgba(9,46,91,.05);
+}
+.payment-campus-title{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:13px 14px;
+  background:linear-gradient(135deg,rgba(8,91,200,.07),rgba(20,205,188,.08));
+  border-bottom:1px solid #e2ebf3;
+}
+.payment-campus-title>div{
+  min-width:0;
+}
+.payment-campus-title strong,
+.payment-campus-title small{
+  display:block;
+}
+.payment-campus-title strong{
+  color:#0c448a;
+  font-size:.78rem;
+}
+.payment-campus-title small{
+  margin-top:2px;
+  color:#708197;
+  font-size:.62rem;
+}
+.payment-campus-dot{
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  flex:0 0 auto;
+  background:linear-gradient(135deg,#0e7dff,#25dbc3);
+  box-shadow:0 0 0 4px rgba(20,132,236,.1);
+}
+.payment-bank-list{
+  display:grid;
+}
+.payment-bank-row{
+  padding:11px 13px;
+  border-bottom:1px solid #edf2f6;
+}
+.payment-bank-row:last-child{
+  border-bottom:0;
+}
+.payment-bank-row>div:first-child strong,
+.payment-bank-row>div:first-child small{
+  display:block;
+}
+.payment-bank-row>div:first-child strong{
+  font-size:.72rem;
+  color:var(--ink);
+}
+.payment-bank-row>div:first-child small{
+  margin-top:2px;
+  color:var(--muted);
+  font-size:.59rem;
+}
+.payment-account-number{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-top:8px;
+}
+.payment-account-number code{
+  display:inline-flex;
+  align-items:center;
+  min-height:30px;
+  padding:6px 8px;
+  border-radius:7px;
+  background:#0c1d31;
+  color:#e9f7ff;
+  font-family:"Inter",ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:.68rem;
+  letter-spacing:.02em;
+}
+.copy-account-btn{
+  flex:0 0 auto;
+  min-height:30px;
+  border:0;
+  border-radius:7px;
+  padding:6px 9px;
+  cursor:pointer;
+  background:#e9f4ff;
+  color:#1768ba;
+  font-size:.62rem;
+  font-weight:800;
+}
+.copy-account-btn:hover{
+  background:#dceeff;
+}
+.copy-account-btn.copied{
+  background:#e5f8ef;
+  color:#0b7e52;
+}
+.account-alt{
+  display:block;
+  margin-top:5px;
+  color:#7a8798;
+  font-size:.57rem;
+}
+.payment-account-reminder{
+  margin-top:12px;
+  padding:10px 11px;
+  border-radius:10px;
+  background:#fffbea;
+  border:1px solid #efe1a7;
+  color:#6d5b1d;
+  font-size:.66rem;
+  line-height:1.55;
+}
+
+@media(max-width:720px){
+  .payment-campus-grid{
+    grid-template-columns:1fr;
+  }
+  .payment-accounts{
+    padding:13px;
+  }
+}
+
+@media(max-width:420px){
+  .payment-account-number{
+    align-items:stretch;
+    flex-direction:column;
+  }
+  .payment-account-number code{
+    width:100%;
+    justify-content:center;
+    word-break:break-all;
+  }
+  .copy-account-btn{
+    width:100%;
+  }
+}

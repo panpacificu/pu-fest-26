@@ -1,15 +1,20 @@
-# PU Fest 2026 Ticketing System — v1.5.3
+# PU Fest 2026 Ticketing System — v1.5.4
 
-Frontend-only UI fix.
+Frontend-only update.
 
-Changes:
-- Archive hidden by default with a Show Archive toggle
-- Registration logo positioning fixed
-- Scanner unlock screen text contrast fixed
+Online Registration now shows the official payment accounts:
 
-Deployment:
-Replace the frontend files on GitHub Pages.
+Urdaneta Campus — Panpacific University, Inc.
+- BPI
+- RCBC
+- Security Bank
+
+Tayug Campus — PUNP Tayug Campus
+- Security Bank
+- BDO
 
 No SQL migration.
-No Supabase Edge Function redeploy.
+No Edge Function redeployment.
 No Apps Script update.
+
+Replace the frontend files on GitHub Pages.

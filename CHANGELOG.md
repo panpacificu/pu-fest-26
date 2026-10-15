@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.5.4 — Online Payment Accounts
+
+- Added official payment account information to Online Registration
+- Clarified Panpacific University, Inc. as Urdaneta Campus
+- Added Urdaneta accounts: BPI, RCBC, Security Bank
+- Added Tayug accounts: Security Bank, BDO
+- Added one-click Copy buttons for account numbers
+- Added payment reminder before proof-of-payment upload
+- Frontend-only update
+- No SQL, Edge Function, or Apps Script changes
+
 ## 1.5.3 — Dashboard / Registration / Scanner Fixes
 
 - Archived Transactions are hidden by default on Admin and Finance

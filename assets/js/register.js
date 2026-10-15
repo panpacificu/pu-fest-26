@@ -32,6 +32,37 @@
     });
   }
 
+
+  document.querySelectorAll(".copy-account-btn").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const account = btn.dataset.account || "";
+      const original = btn.textContent;
+
+      try {
+        await navigator.clipboard.writeText(account);
+        btn.textContent = "Copied";
+        btn.classList.add("copied");
+      } catch {
+        const temp = document.createElement("textarea");
+        temp.value = account;
+        temp.setAttribute("readonly", "");
+        temp.style.position = "fixed";
+        temp.style.opacity = "0";
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand("copy");
+        temp.remove();
+        btn.textContent = "Copied";
+        btn.classList.add("copied");
+      }
+
+      setTimeout(() => {
+        btn.textContent = original;
+        btn.classList.remove("copied");
+      }, 1400);
+    });
+  });
+
   form.addEventListener("submit", async e => {
     e.preventDefault();
     const btn = $("onlineSubmitBtn");
