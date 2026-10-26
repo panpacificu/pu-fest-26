@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.5.5 — Registration Payment Account Simplification
+
+- Online Registration now shows only Urdaneta Campus Security Bank
+- Account Name: Panpacific University, Inc.
+- Account Number: 029206-37680-01
+- Removed BPI, RCBC, Tayug Security Bank, and BDO from the public registration page
+- Kept copy-account button and payment reminder
+- Frontend-only update
+- No SQL, Edge Function, or Apps Script changes
+
 ## 1.5.4 — Online Payment Accounts
 
 - Added official payment account information to Online Registration

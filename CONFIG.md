@@ -1,20 +1,14 @@
-# PU Fest 2026 Ticketing System — v1.5.4
+# PU Fest 2026 Ticketing System — v1.5.5
 
 Frontend-only update.
 
-Online Registration now shows the official payment accounts:
+The public Online Registration page now shows only:
 
-Urdaneta Campus — Panpacific University, Inc.
-- BPI
-- RCBC
-- Security Bank
-
-Tayug Campus — PUNP Tayug Campus
-- Security Bank
-- BDO
+Urdaneta Campus
+Security Bank
+Account Name: Panpacific University, Inc.
+Account Number: 029206-37680-01
 
 No SQL migration.
 No Edge Function redeployment.
 No Apps Script update.
-
-Replace the frontend files on GitHub Pages.

@@ -1,6 +1,6 @@
 # PU Fest 2026 Ticketing System
 
-**Version:** 1.5.4
+**Version:** 1.5.5
 **Event:** PU Fest 2026  
 **Date:** October 30, 2026  
 **Time:** 1:00 PM–6:00 PM  
