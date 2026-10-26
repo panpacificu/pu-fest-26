@@ -1,14 +1,15 @@
-# PU Fest 2026 Ticketing System — v1.5.5
+# PU Fest 2026 Ticketing System — v1.5.6
 
-Frontend-only update.
+Frontend-only registration update.
 
-The public Online Registration page now shows only:
+Before the public Online Registration form opens, users now see an Important Notice:
 
-Urdaneta Campus
-Security Bank
-Account Name: Panpacific University, Inc.
-Account Number: 029206-37680-01
+Online ticketing is for outsiders/guests only.
+
+Students should purchase tickets onsite:
+- Tayug Campus — ADMIN BLDG (Finance)
+- Urdaneta Campus — 2F PCST HALL (Finance)
 
 No SQL migration.
-No Edge Function redeployment.
+No Supabase Edge Function redeployment.
 No Apps Script update.

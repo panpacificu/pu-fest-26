@@ -10,6 +10,36 @@
   <link rel="stylesheet" href="assets/css/app.css">
 </head>
 <body class="online-registration-page branded-public-page">
+
+<dialog id="outsiderNoticeDialog" class="outsider-notice-dialog">
+  <div class="dialog-card outsider-notice-card">
+    <div class="outsider-notice-icon">!</div>
+    <span class="kicker">IMPORTANT NOTICE</span>
+    <h2>Online ticketing is for outsiders only.</h2>
+    <p>This registration form is intended for guests and buyers who are not currently enrolled Panpacific University students.</p>
+
+    <div class="student-purchase-box">
+      <span>PanpacificU students should purchase tickets directly from Finance:</span>
+
+      <div class="student-purchase-location">
+        <strong>Tayug Campus</strong>
+        <p>ADMIN BLDG <span>• Finance</span></p>
+      </div>
+
+      <div class="student-purchase-location">
+        <strong>Urdaneta Campus</strong>
+        <p>2F PCST HALL <span>• Finance</span></p>
+      </div>
+    </div>
+
+    <p class="outsider-notice-foot">If you are an outsider or guest, you may continue with the online registration below.</p>
+
+    <button class="btn btn-primary outsider-continue-btn" id="outsiderContinueBtn" type="button">
+      I Understand — Continue
+    </button>
+  </div>
+</dialog>
+
 <header class="public-topbar">
   <a class="brand" href="register.html"><span class="brand-mark brand-mark-logo"><img src="assets/img/pufest-logo-2026.png" alt="PU Fest 2026"></span><span><strong>PU Fest 2026</strong><small>Online Ticket Registration</small></span></a>
 </header>
@@ -119,5 +149,30 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="assets/js/config.js"></script><script src="assets/js/supabase-client.js"></script><script src="assets/js/common.js"></script><script src="assets/js/register.js"></script>
+
+<script>
+(() => {
+  const dialog = document.getElementById("outsiderNoticeDialog");
+  const continueBtn = document.getElementById("outsiderContinueBtn");
+  if (!dialog || !continueBtn) return;
+
+  const openNotice = () => {
+    if (!dialog.open) dialog.showModal();
+  };
+
+  continueBtn.addEventListener("click", () => dialog.close());
+
+  dialog.addEventListener("cancel", (event) => {
+    event.preventDefault();
+  });
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", openNotice, { once: true });
+  } else {
+    openNotice();
+  }
+})();
+</script>
+
 </body>
 </html>

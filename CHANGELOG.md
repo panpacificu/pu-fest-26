@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.5.6 — Outsider Registration Notice
+
+- Added an Important Notice modal before accessing Online Registration
+- Clarifies that the online ticketing form is for outsiders/guests only
+- Directs PanpacificU students to onsite Finance ticket selling locations
+- Tayug: ADMIN BLDG (Finance)
+- Urdaneta: 2F PCST HALL (Finance)
+- Modal must be acknowledged before continuing to the form
+- Frontend-only update
+- No SQL, Edge Function, or Apps Script changes
+
 ## 1.5.5 — Registration Payment Account Simplification
 
 - Online Registration now shows only Urdaneta Campus Security Bank

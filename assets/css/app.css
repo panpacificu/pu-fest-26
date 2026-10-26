@@ -1118,3 +1118,109 @@ dialog::backdrop{background:rgba(1,15,43,.72);backdrop-filter:blur(6px)}
 .payment-accounts .payment-campus-card-single{
   width:100%;
 }
+
+
+/* v1.5.6 — outsider-only registration notice */
+.outsider-notice-dialog{
+  width:min(520px,calc(100% - 24px));
+  max-width:520px;
+}
+.outsider-notice-dialog::backdrop{
+  background:rgba(2,12,35,.78);
+  backdrop-filter:blur(8px);
+}
+.outsider-notice-card{
+  padding:28px;
+  border:1px solid rgba(255,255,255,.55);
+  background:
+    radial-gradient(circle at top right,rgba(44,221,197,.12),transparent 32%),
+    linear-gradient(180deg,#ffffff,#f7fbff);
+  box-shadow:0 30px 90px rgba(0,18,55,.38);
+}
+.outsider-notice-icon{
+  width:48px;
+  height:48px;
+  display:grid;
+  place-items:center;
+  border-radius:14px;
+  background:linear-gradient(135deg,#ffcf48,#ff9a3d);
+  color:#563600;
+  font-size:1.4rem;
+  font-weight:900;
+  box-shadow:0 10px 24px rgba(255,169,57,.22);
+}
+.outsider-notice-card h2{
+  margin:0;
+  color:#10233d;
+  font-size:1.5rem;
+  letter-spacing:-.025em;
+}
+.outsider-notice-card>p{
+  margin:0;
+  color:#62758d;
+  font-size:.8rem;
+  line-height:1.65;
+}
+.student-purchase-box{
+  display:grid;
+  gap:8px;
+  padding:14px;
+  border:1px solid #d7e8f4;
+  border-radius:14px;
+  background:#f3f9ff;
+}
+.student-purchase-box>span{
+  color:#49617d;
+  font-size:.7rem;
+  line-height:1.5;
+}
+.student-purchase-location{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  padding:10px 11px;
+  border-radius:10px;
+  background:#ffffff;
+  border:1px solid #e1eaf2;
+}
+.student-purchase-location strong{
+  color:#0d4f99;
+  font-size:.74rem;
+}
+.student-purchase-location p{
+  margin:0;
+  color:#172b43;
+  font-size:.72rem;
+  font-weight:800;
+  text-align:right;
+}
+.student-purchase-location p span{
+  color:#718097;
+  font-weight:600;
+}
+.outsider-notice-foot{
+  padding:10px 11px;
+  border-radius:10px;
+  background:#eaf9f3;
+  color:#187451!important;
+  font-weight:600;
+}
+.outsider-continue-btn{
+  width:100%;
+  min-height:46px;
+}
+
+@media(max-width:520px){
+  .outsider-notice-card{
+    padding:21px;
+  }
+  .student-purchase-location{
+    align-items:flex-start;
+    flex-direction:column;
+    gap:4px;
+  }
+  .student-purchase-location p{
+    text-align:left;
+  }
+}
